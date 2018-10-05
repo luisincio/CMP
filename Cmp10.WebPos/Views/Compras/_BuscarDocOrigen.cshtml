@@ -1,0 +1,93 @@
+﻿<script>
+    $(document).ready(function ()
+    {
+        $("#btnBuscar").click(function () {
+            var a = $("#DetalleLista");
+            $.getJSON(FullPathSrv + "Compras/BuscarDocOrigenJSON", { vDescripcion: $("#txtBusqueda").val() }, function (b) {
+                a.empty();
+                for (var c = 0; c < b.length; c++) {
+                    var d = "",
+                        d = "<tr>",
+                        d = d + '<td class="left">' + b[c].Valor1 + '</td>',
+                        d = d + '<td class="left">' + b[c].Descripcion + '</td>',
+                        d = d + '<td align="center">',
+                        d = d + '<input type="radio" name="RadioDocOrigen" data-key="' + b[c].Valor1 + '" value="' + b[c].Descripcion + '" />',
+                        d = d + '</td>',
+                        d = d + '</tr>';
+                    a.append(d)
+                }
+            })
+        });
+
+        $("#btnLimpiar").click(function () {
+            $("#DetalleLista").empty(), $("#txtBusqueda").val(""), $("#txtBusqueda").focus();
+        });
+
+    })
+
+    function Aceptar()
+    {
+        //var a = "";
+        //$("#DetalleLista tr").each(function ()
+        //{
+        //    if (parseInt($(this).find("input").val()) > 0)
+        //    {
+        //        $("#TempRow").remove();
+        //        var d = "",
+        //        d = "<tr>",
+        //        d = d + '<td class="text-left">' + $(this).find("td").eq(0).html() + "</td>",
+        //        d = d + '<td class="text-left">' + $(this).find("td").eq(1).html() + "</td>",
+        //        d = d + '<td class="text-left">' + $(this).find("td").eq(2).html() + "</td>",
+        //        d = d + '<td class="text-right">' + $(this).find("td").eq(4).find("input").val() + "</td>",
+        //        d = d + '<td class="text-right">' + (parseFloat($(this).find("td").eq(3).find("input").val()).toFixed(2)).toString() + "</td>",
+        //        d = d + '<td class="text-right">' + (parseFloat($(this).find("td").eq(3).find("input").val()) * parseFloat($(this).find("td").eq(4).find("input").val())).toFixed(2).toString() + "</td>",
+        //        d = d + '<td class="hidden">' + ((parseFloat($(this).find("td").eq(5).html()) * parseFloat($(this).find("td").eq(3).find("input").val()) * parseFloat($(this).find("td").eq(4).find("input").val())) / 100).toFixed(2).toString() + "</td>",
+        //        d = d + '<td class="text-center"> <button type="button" class="btn btn-danger btn-xs" title="Eliminar Articulo" onclick="fnEliminar($(this));"><span class="glyphicon glyphicon-trash"></span>&nbsp;</button> </td>',
+        //        d = d + "</tr>";
+        //        $("#tblFacDEt").append(d);
+        //    }
+        //});
+
+        var p = $("input:radio[name=RadioDocOrigen]:checked").attr("data-key");
+        var o = $("input:radio[name=RadioDocOrigen]:checked").val();
+        $("#DocumentoOrigen").val(o);
+        $("#DocumentoOrigen").attr("data-key", p);
+        //alert(p);
+        //alert(o);
+        //fnCalcular();
+    }
+</script>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="txtBusqueda" class="control-label col-md-2 input-sm">Buscar Documento</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <input type="text" placeholder="Ingrese servicio o articulo a buscar" name="txtBusqueda" id="txtBusqueda" tabindex="0" class="form-control input-sm">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnBuscar" name="btnBuscar"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+                            <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnLimpiar"><span class="glyphicon glyphicon-new-window"></span> Limpiar</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12" style="max-height:360px; overflow-y: scroll;">
+            <table class="table table-bordered table-responsive table-hover">
+                <thead class="tablahead">
+                    <tr>
+                        <th class="col-lg-2 centro">Código</th>
+                        <th class="col-lg-9 centro">Descripción</th>
+                        <th class="col-lg-1 centro">Selección</th>
+                    </tr>
+                </thead>
+                <tbody id="DetalleLista"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

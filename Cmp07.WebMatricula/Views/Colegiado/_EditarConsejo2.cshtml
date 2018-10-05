@@ -1,0 +1,25 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Colegiado_Consejo
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Consejo_Regional" class="control-label col-md-4 input-sm">Consejo Regional:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Consejo_Regional, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Consejo_Regional), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Ingreso" class="control-label col-md-4 input-sm">Fecha Registro:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Fec_Ingreso, new { @class = "form-control input-sm text-uppercase", @readonly="readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Consejo)
+@Html.HiddenFor(m => m.Opcional)

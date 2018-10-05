@@ -1,0 +1,186 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Cobranza>
+<script>
+    function fnSeleccionoDoctor() {
+        "" == $("#vId_Entidad").val() ? FullMsg.Alert("Debe seleccionar una entidad pagadora para asociar al doctor") : "" == $("#vIdConsejo").val() ? FullMsg.Alert("Debe tener un consejo para asociar al doctor") :
+        $.get(FullPathSrv + "Cobranza/Seleccionar_Doctor", { vId: $("#hdDoctorModal").val(), vIdEntidad: $("#vId_Entidad").val(), vIdConsejo: $("#vIdConsejo").val() }, function (a) {
+            1 == a ? $("#frmBandeja").submit() : FullMsg.Alert("Ocurrio un error al asociar el doctor a la entidad")
+        })
+    }
+    function fnQuitarDoctor(a) {
+        "" == $("#vId_Entidad").val() ? FullMsg.Alert("Debe seleccionar una entidad pagadora para asociar al doctor") : "" == $("#vIdConsejo").val() ? FullMsg.Alert("Debe tener un consejo para asociar al doctor") : FullMsg.Confirm("¿Seguro de eliminar el usuario?", function (b) { b && $.get(FullPathSrv + "Cobranza/Quitar_Doctor", { vId: a }, function (a) { 1 == a ? $("#frmBandeja").submit() : FullMsg.Alert("Ocurrio un error al asociar el doctor a la entidad") }) })
+    }
+
+    $(document).ready(function () {
+        $("#btnBuscarDocumento").on("click", function () {
+            $.get(FullPathSrv + "Cobranza/ObtenerRecibo", { vRecibo: $("#vDocumento").val() }, function (a) {
+                $("#Aux").val(parseInt(a.Id_Clientepagador));
+                $("#vTotal").val(a.Total.toFixed(2));
+                $("#vIdConsejo").val(a.Id_Sitio_Destino).trigger("change");
+            })
+        })
+
+        $("#vIdConsejo").change(function () {
+            var a = $("#vId_Entidad");
+            a.empty(),
+            "" != $("select#vIdConsejo").val() && $.ajax({
+                url: FullPathSrv + "Cobranza/ListarEntidad", type: "POST", data: { vConsejo: $("select#vIdConsejo").val() },
+                success: function (b) { $.each(b, function (b, c) { $("<option>", { value: c.id }).html(c.label).appendTo(a) }), a.val($("#Aux").val()) }
+            })
+        })
+
+        $("#btnPagar").on("click", function () {
+            0 == $("#vDocumento").val().trim().length ? FullMsg.Alert("Debe ingresar un número de recibo") :
+            "" == $("#vIdConsejo").val() ? FullMsg.Alert("Debe buscar un consejo según su recibo") :
+            "" == $("#vId_Entidad").val() ? FullMsg.Alert("Debe seleccionar una entidad pagadora para asociar a los medicos") :
+            0 == parseFloat($("#vTotal").val()) ? FullMsg.Alert("El monto no puede ser cero") :
+            0 == $("#vPeriodo").val().trim().length ? FullMsg.Alert("Debe seleccionar un periodo") :
+            FullMsg.Confirm("¿Seguro de procesar el pago?", function (e) {
+                if (e) {
+                    var o = "";
+                    var u = "";
+                    $('input[name="cbxPagar"]:checked').each(function () {
+                        o += $(this).val() + "|"
+                        u += $(this).parents("tr").find("input[name='Monto']").val() + "|"
+                    })
+                    $.get(FullPathSrv + "Cobranza/Procesar_Pago", { vIds: o, vMontos: u, vRecibo: $("#vDocumento").val() }, function (e) { 1 == e ? FullMsg.Alert("Se proceso con exito!") : FullMsg.Alert("Ocurrio un error al asociar el doctor a la entidad") })
+                    //$.get(FullPathSrv + "Cobranza/Procesar_Pago", { vIds: o, vMontos: u }, function (e) { 1 == e ? FullMsg.Alert("Se proceso con exito!") : FullMsg.Alert("Ocurrio un error al asociar el doctor a la entidad") })
+                }
+            })
+        });
+
+        $("#btnAgregar").on("click", function () { $.get(FullPathSrv + "Cobranza/Listar_Doctores", function (a) { modal = FullMsg.Modal({ title: "Buscar Medico", message: a, buttons: [{ label: "Aceptar", className: "btn-primary", callback: function () { return fnSeleccionoDoctor(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) }),
+        $("#btnTodos").on("click", function () {
+            $("#SaldoActual").val("0.00");
+            $('input[name="cbxPagar"]').each(function () { this.checked = !0 }),
+            $('input[name="cbxPagar"]:checked').each(function () {
+                var a = parseFloat($("#SaldoActual").val()),
+                    b = parseFloat($(this).parents("tr").find("input[name='Monto']").val());
+                //b = parseFloat($(this).attr("datafull"));
+                $("#SaldoActual").val((a + b).toFixed(2))
+            })
+        }),
+        $("#btnNinguno").on("click", function () {
+            $('input[name="cbxPagar"]').each(function () { this.checked = !1 }), $("#SaldoActual").val("0.00")
+        });
+    });
+</script>
+
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Planilla", "Cobranza", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmBandeja" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Nro_Documento" class="control-label col-md-3 input-sm">Nro. Documento:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        @Html.TextBox("vDocumento", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnBuscarDocumento" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vValor" class="control-label col-md-3 input-sm">Por Nombres o DNI:</label>
+                                    <div class="col-md-9">
+                                        @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre, apellido, colegiatura o número documento", @maxlength = "100" })
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vIdConsejo" class="control-label col-md-3 input-sm">Por Consejo:</label>
+                                <div class="col-md-9">
+                                    @*@Html.DropDownList("vIdConsejo", new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION"), "TODOS", new { @class = "form-control input-sm text-uppercase" })*@
+                                    @Html.DropDownList("vIdConsejo", (SelectList)ViewBag.LstConsejo, "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vId_Entidad" class="control-label col-md-3 input-sm">Por Entidad:</label>
+                                <div class="col-md-9">
+                                    @*@Html.DropDownList("vId_Entidad", new SelectList((List<Tb_Persona_Juridica>)ViewBag.LstEntidad, "Id_Persona", "Razon_Social"), "TODOS", new { @class = "form-control input-sm text-uppercase" })*@
+                                    @if (ViewBag.LstEntidad == null)
+                                    {
+                                        <select name="vId_Entidad" id="vId_Entidad" class="form-control input-sm text-uppercase"></select>
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownList("vId_Entidad", (SelectList)ViewBag.LstEntidad, "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vId_Entidad" class="control-label col-md-3 input-sm">Por Total:</label>
+                                <div class="col-md-9">
+                                    @Html.TextBox("vTotal", "0.00", new { @class = "form-control input-sm text-uppercase", @maxlength = "20", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vPeriodo" class="control-label col-md-3 input-sm">Periodo:</label>
+                                <div class="col-md-9">
+                                    @Html.DropDownList("vPeriodo", (SelectList)ViewBag.LstPeriodo, "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="submit" name="vBuscar" value="1" class="btn btn-primary btn-sm">Buscar</button>
+                            <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            <button type="button" id="btnTodos" class="btn btn-default btn-sm">Todos</button>
+                            <button type="button" id="btnNinguno" class="btn btn-default btn-sm">Ninguno</button>
+                            <button type="button" id="btnPagar" class="btn btn-default btn-sm">Pagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_DetallePlanilla", Model)
+                </div>
+            </div>
+        </div>
+
+        @Html.Hidden("hdDoctorModal", "")
+        @Html.Hidden("Aux", "")
+    }
+</div>
+
+
+

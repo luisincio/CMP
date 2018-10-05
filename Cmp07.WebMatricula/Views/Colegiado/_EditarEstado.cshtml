@@ -1,0 +1,23 @@
+﻿@using Cmp02.Entities;
+@model Tb_Colegiado_Estado
+
+@using (Ajax.BeginForm("Estado", "Colegiado", new AjaxOptions { UpdateTargetId = "divEstado", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarEstado" }))
+{
+    <div id="divEstado">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmEstados").submit();
+
+                //Registrar
+                document.location = FullPathSrv + "Colegiado/Registrar?vId=@Model.Id_Persona";
+                //$("#frmDatosPrincipal").submit()
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarEstado2", Model)
+        }
+    </div>
+}

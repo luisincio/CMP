@@ -1,0 +1,17 @@
+﻿@model Cmp02.Entities.Tb_Servicios
+
+@using (Ajax.BeginForm("EditarOpciones", "Servicios", new AjaxOptions { UpdateTargetId = "divOpciones", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarOpciones" }))
+{
+    <div id="divServicio">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarOpciones2", Model)
+        }
+    </div>
+}

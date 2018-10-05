@@ -1,0 +1,77 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model EmpresaMin
+<script>
+    $(document).ready(function(){$("#Ubigeo_Nombre").autocomplete({source:FullPathSrv+"Cliente/ListarUbigeoPeru",select:function(a,b){$("#Id_Ubigeo").val(b.item.id)}}),$("#Id_Origen_Juridico").change(function(){var a=$("#Id_Grupo_Juridico");a.empty(),""!=$("select#Id_Origen_Juridico").val()&&$.ajax({url:FullPathSrv+"Empresa/ListarGrupo",type:"POST",data:{vSector:$("select#Id_Origen_Juridico").val()},success:function(b){$.each(b,function(b,c){$("<option>",{value:c.id}).html(c.label).appendTo(a)})}})}),0==parseInt("@Model.Id_Persona")&&$("#Id_Origen_Juridico").change()});
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Ruc" class="control-label col-md-4 input-sm">Número de RUC:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Ruc, new { @class = "form-control input-sm text-uppercase", @maxlength = "11" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Consejo_Juridico" class="control-label col-md-4 input-sm">Consejo:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Consejo_Juridico, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Consejo_Juridico), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Origen_Juridico" class="control-label col-md-4 input-sm">Sector:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Origen_Juridico, new SelectList((List<Tb_Maestras>)ViewBag.LstSector, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Origen_Juridico), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Grupo_Juridico" class="control-label col-md-4 input-sm">Grupo:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Grupo_Juridico, new SelectList((List<Tb_Maestras>)ViewBag.LstGrupo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Grupo_Juridico), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Nombre_Comercial" class="control-label col-md-2 input-sm">Razón Social:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Razon_Social, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Direccion" class="control-label col-md-2 input-sm">Dirección:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control input-sm text-uppercase", @maxlength = "150"})
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Ubigeo_Nombre" class="control-label col-md-2 input-sm">Ubigeo:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Ubigeo_Nombre, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Opcional)
+@Html.HiddenFor(m => m.Id_Ubigeo)

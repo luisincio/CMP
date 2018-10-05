@@ -1,0 +1,115 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Comprobantecabecera
+@{
+    ViewBag.Title = "Gestión de Comprobantes de Venta";
+}
+
+<script>
+    $(document).ready(function () {
+        $("#vTipoDocumento").on("change", function () { $("#vSerieDocumento").empty(), $("#vNroDocumento").val(""), $.getJSON(FullPathSrv + "Comprobante/ListarSerie?vTipoDocumento=" + $("#vTipoDocumento").val(), function (o) { $.each(o, function (o, e) { $("#vSerieDocumento").append('<option value="' + e.Serie + '">' + e.Id_Documento_GP + "</option>") }) }) });
+
+    })
+
+    function BuscarDocumento() {
+
+        $("#vIdCab, #vIdDet").val(3327)
+        $("#frmCabecera").submit();
+        $("#frmDetalle").submit();
+    }
+</script>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Búsqueda del Comprobantes de Venta
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="vTipoDocumento" class="control-label col-md-3 input-sm">Tipo:</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("vTipoDocumento", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="vNroDocumento" class="control-label col-md-3 input-sm">Nro Documento:</label>
+                            <div class="col-md-4">
+                                <select name="vSerieDocumento" id="vSerieDocumento" class="form-control input-sm text-uppercase"> </select>
+                            </div>
+                            <div class="col-md-5">
+                                @Html.TextBox("vNroDocumento", "", new { @class = "form-control input-sm text-uppercase" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <span class="input-group-btn">
+                            <button type="button" id="btnBuscar" onclick="BuscarDocumento()" class="btn btn-primary btn-sm">Buscar</button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="divComprobante">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Datos del Comprobantes de Venta
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                @using (Ajax.BeginForm("GetCabecera", "Comprobante", new AjaxOptions { UpdateTargetId = "divFullCab", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmCabecera" }))
+                {
+                    <div class="panel-body" id="divFullCab">
+                        @Html.Partial("_Cabecera3", Model)
+                    </div>
+                    @Html.Hidden("vIdCab", "")
+                }
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Detalle del Comprobantes de Venta
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                @using (Ajax.BeginForm("GetDetalle", "Comprobante", new AjaxOptions { UpdateTargetId = "divFullDet", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmDetalle" }))
+                {
+                <div class="panel-body" id="divFullDet">
+                    @if (Model != null)
+                    {
+                        @Html.Partial("_Detalle3", Model.Detalle)
+                    }
+                    else
+                    {
+                        @Html.Partial("_Detalle3", null)
+                    }
+                </div>
+                    @Html.Hidden("vIdDet", "")
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

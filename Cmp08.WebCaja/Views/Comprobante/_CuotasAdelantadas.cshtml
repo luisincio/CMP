@@ -1,0 +1,72 @@
+﻿@using Cmp02.Entities;
+@model int
+
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar_Persona", "Comprobante", new AjaxOptions { UpdateTargetId = "divModal", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmModal" }))
+    {
+        <div class="panel panel-default">
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Concepto" class="control-label col-md-4 input-sm">Concepto:</label>
+                                <div class="col-md-8">
+                                    @*@Html.DropDownList("Concepto", new SelectList((List<Tb_Maestras>)ViewBag.LstGrupo, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Periodo" class="control-label col-md-4 input-sm">Periodo:</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Periodo", DateTime.Now.Year, new { @class = "form-control input-sm text-uppercase", @type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Desde" class="control-label col-md-4 input-sm">Desde:</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("Desde", new SelectList((List<Tb_Maestras>)ViewBag.LstDesde, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Hasta" class="control-label col-md-4 input-sm">Hasta:</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("Hasta", new SelectList((List<Tb_Maestras>)ViewBag.LstHasta, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Precio" class="control-label col-md-4 input-sm">Precio:</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Precio", DateTime.Now.Year, new { @class = "form-control input-sm text-uppercase", @type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Total" class="control-label col-md-4 input-sm">Total:</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Total", DateTime.Now.Year, new { @class = "form-control input-sm text-uppercase", @type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

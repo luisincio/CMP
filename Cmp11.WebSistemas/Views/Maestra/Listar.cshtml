@@ -1,0 +1,180 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Maestras>
+
+<script>
+    $(document).ready(function () {
+        $("#btnAgregar").on("click", function () { fnEditar(0) })
+        $("#btnAgregarHijo").on("click", function () { fnEditarHijo(0, $("#hdnMaestra").val()) })
+        $("#frmDetalle").submit();
+    });
+
+    function fnEliminar(a) {
+        FullMsg.Confirm("¿Seguro de eliminar la Maestra?", function (e) {
+            if (e) {
+                $.get(FullPathSrv + "Maestra/Eliminar", { vId: a }, function (data) {
+                    $("#frmMaestra").submit();
+                });
+            }
+        });
+    }
+
+    function fnEditar(a) {
+        $.get(FullPathSrv + "Maestra/Editar", { vId: a }, function (data) {
+            modal = FullMsg.Modal({
+                title: "Datos de la Maestra",
+                message: data,
+                buttons: [
+                  {
+                      label: "Guardar", className: "btn-primary", callback: function () {
+                          $("#frmEditarMaestra").submit();
+                          return false;
+                      }
+                  },
+                  {
+                      label: "Cancelar", className: "btn-default", callback: function () {
+                          modal.modal("hide");
+                      }
+                  }
+                ],
+            });
+            modal.modal("show");
+        });
+    }
+
+    function fnEditarHijo(a, b)
+    {
+        $.get(FullPathSrv + "Maestra/EditarHijo", { vId: a, vPadre: b }, function (data) {
+            modal = FullMsg.Modal({
+                title: "Datos de la Maestra",
+                message: data,
+                buttons: [
+                  {
+                      label: "Guardar", className: "btn-primary", callback: function () {
+                          $("#frmEditarMaestra").submit();
+                          return false;
+                      }
+                  },
+                  {
+                      label: "Cancelar", className: "btn-default", callback: function () {
+                          modal.modal("hide");
+                      }
+                  }
+                ],
+            });
+            modal.modal("show");
+        });
+    }
+
+    function fnMostrarDetalle(a) {
+        $("#hdnMaestra").val(a);
+        $("#frmDetalle").submit();
+    }
+</script>
+<div class="panel-group" id="accordion">
+    @*<div class="row">
+            <div class="col-md-12">
+                <h3>Catálogo de Maestras</h3>
+            </div>
+        </div>*@
+    @*<h3>Catálogo de Maestras</h3>
+    <hr />*@
+    <div class="row">
+        <div class="col-md-6">
+            @using (Ajax.BeginForm("Listar", "Maestra", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmMaestra" }))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                Criterios de Búsqueda
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-9" style="width: 76%; padding-left: 0px; padding-right: 0px;">
+                                    <div class="form-group">
+                                        <label for="vNombre" class="control-label col-md-3 input-sm">Por Tabla:</label>
+                                        <div class="col-md-9" style="padding-left: 0px; padding-right: 0px;">
+                                            @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre de maestra", @maxlength = "250" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-right" style="width:24%;padding-left: 0px;padding-right:2px;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                    <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                Resultados de Catálogo de Maestras
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse in">
+                        <div id="divDatos" class="panel-body">
+                            @Html.Partial("_Detalle", Model)
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            @using (Ajax.BeginForm("ListarHijo", "Maestra", new AjaxOptions { UpdateTargetId = "divDetalle", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmDetalle" }))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                Criterios de Búsqueda
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-9" style="width: 76%; padding-left: 0px; padding-right: 0px;">
+                                    <div class="form-group">
+                                        <label for="vNombre" class="control-label col-md-3 input-sm">Por Valor:</label>
+                                        <div class="col-md-9" style="padding-left: 0px; padding-right: 0px;">
+                                            @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre de maestra", @maxlength = "250" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-right" style="width:24%;padding-left: 0px;padding-right:2px;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                    <button type="button" id="btnAgregarHijo" class="btn btn-default btn-sm">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="hdnMaestra" name="vPadre" value="" />
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                Resultados de Parámetros de Maestras
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="collapse4" class="panel-collapse collapse in">
+                        <div id="divDetalle" class="panel-body">
+                            @Html.Partial("_DetalleHijo", Model)
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

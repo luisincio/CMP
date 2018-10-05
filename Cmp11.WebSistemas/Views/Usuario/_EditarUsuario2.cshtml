@@ -1,0 +1,73 @@
+﻿@using Cmp02.Entities
+@model Cmp02.Entities.Tb_Usuario
+
+<script>
+    $(document).ready(function(){$("#btnBuscarUsuario").on("click",function(){$.post(FullPathSrv+"Usuario/BuscarUsuario",{vDocumento:0,vNumero:$("#Nro_Documento").val()},function(a){$("#Nombre_Completo").val(a.Apellido_Paterno+" "+a.Apellido_Materno+", "+a.Nombres),$("#Id_Usuario").val(a.Id_Persona)})})});
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Documento" class="control-label col-md-4 input-sm">Número de DNI:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Nro_Documento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarUsuario" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Consejo_Regional" class="control-label col-md-4 input-sm">Consejo Regional:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Consejo_Regional, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Consejo_Regional), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Nombre_Completo" class="control-label col-md-2 input-sm" style="width:16.1%!important">Nombre Completo:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Nombre_Completo, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Usuario" class="control-label col-md-2 input-sm" style="width:16.1%!important">Usuario:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Contraseña" class="control-label col-md-4 input-sm">Clave:</label>
+            <div class="col-md-8">
+                @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Confirmacion" class="control-label col-md-4 input-sm">Confirmar Clave:</label>
+            <div class="col-md-8">
+                @Html.PasswordFor(m => m.Confirmacion, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id_Usuario)
+@Html.HiddenFor(m => m.Opcional)

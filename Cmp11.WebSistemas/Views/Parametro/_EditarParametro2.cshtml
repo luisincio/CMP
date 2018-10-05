@@ -1,0 +1,53 @@
+﻿@model Cmp02.Entities.Tb_Parametro
+
+<script>
+    $(document).ready(function ()
+    {
+        if ("@Model.Opcional" == "OK")
+        {
+            modal.modal("hide");
+            $("#frmParametro").submit();
+        }
+
+
+    })
+
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Parametro" class="control-label col-md-2 input-sm" style="width:16.1%!important">Descripción:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control input-sm text-uppercase", @maxlength = "250" })
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Valor_Texto" class="control-label col-md-2 input-sm" style="width:16.1%!important">Valor Texto:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Valor_Texto, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Valor_Numerico" class="control-label col-md-2 input-sm" style="width:16.1%!important">Valor Numérico:</label>
+            <div class="col-md-10" style="width: 43.9%!important">
+                @Html.TextBoxFor(m => m.Valor_Numerico, new { @class = "form-control input-sm text-uppercase"})
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.HiddenFor(m => m.Id_Parametro)
+@Html.HiddenFor(m => m.Opcional)
+
+

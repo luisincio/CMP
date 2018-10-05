@@ -1,0 +1,40 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<ClienteClover>
+<script>
+    function BuscarCliente() { 2 < $("#vValor").val().trim().length && $("#frmClienteGP").submit() }
+</script>
+
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("BuscarClienteGP", "Cobranza", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmClienteGP" }))
+    {
+        <div class="panel panel-default">
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-3 input-sm">Por Cliente o Documento:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese Cliente o Nro. de Documento (DNU/RUC)", @maxlength = "50" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnBuscar" onclick="BuscarCliente()" class="btn btn-primary btn-sm">Buscar</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body" style="max-height:360px; padding: 0px; overflow-y: scroll;">
+                    @Html.Partial("_BuscarClienteDetalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

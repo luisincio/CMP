@@ -1,0 +1,19 @@
+﻿@using Cmp02.Entities;
+@model Tb_Colegiado_Laboral
+
+@using (Ajax.BeginForm("Trabajo", "Colegiado", new AjaxOptions { UpdateTargetId = "divTrabajo", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarTrabajo" }))
+{
+    <div id="divTrabajo">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmTrabajos").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarTrabajo2", Model)
+        }
+    </div>
+}

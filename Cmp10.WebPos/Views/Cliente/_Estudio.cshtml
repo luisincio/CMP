@@ -1,0 +1,143 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Colegiado_Estudio
+
+<script>
+    $(document).ready(function () {
+        if ("@Model.Opcional" == "OK") { FullMsg.Alert("Se grabaron los datos correctamente"); $("#Id_Estudio").val("@Model.Id_Estudio") }
+        $("#Id_Origen").change(function () { $("#Universidad").val("") });
+        $("#Universidad").autocomplete({ source: function (a, b) { $.getJSON(FullPathSrv + "Colegiado/ListarUniversidad", { vOrigen: $("#Id_Origen").val(), vValor: $("#Universidad").val() }, b) }, minLength: 2, select: function (a, b) { $("#Id_Universidad").val(b.item.id) } });
+        $("#Id_Situacion").change(function () { $("#DivEntidad_Acreditada").hide(), "@Convert.ToInt32(EnumSituacionEstudio.RECONOCIDO)" != $("#Id_Situacion").val() && "@Convert.ToInt32(EnumSituacionEstudio.REVALIDADO)" != $("#Id_Situacion").val() || $("#DivEntidad_Acreditada").show(), $("#Entidad_Acreditada").val("@Convert.ToInt32(EnumSituacionEstudio.RECONOCIDO)" == $("#Id_Situacion").val() ? "@Variables.EntidadAcreditada" : "") });
+        $("#btnFechaEgreso").click(function () { $("#Fecha_Egreso").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha_Egreso").datepicker("show") });
+        $("#btnFechaExp").click(function () { $("#Fecha_Exp_Titulo").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha_Exp_Titulo").datepicker("show") });
+        if ("@Model.Fecha_Egreso.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Egreso").val("@Variables.Hoy.ToShortDateString()") }
+        if ("@Model.Fecha_Exp_Titulo.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Exp_Titulo").val("@Variables.Hoy.ToShortDateString()") }
+
+        $("#Entidad_Acreditada").autocomplete({ source: function (a, b) { $.getJSON(FullPathSrv + "Colegiado/ListarUniversidad", { vOrigen: "@Variables.Peru", vValor: $("#Entidad_Acreditada").val() }, b) }, minLength: 2, select: function (a, b) { $("#xxx").val(b.item.id) } });
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Origen" class="control-label col-md-3 input-sm">Origen:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Origen, new SelectList((List<Tb_Pais>)ViewBag.LstPais, "ID_PAIS", "DESCRIPCION", Model.Id_Origen), new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Universidad" class="control-label col-md-3 input-sm">Universidad:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Universidad, new { @class = "form-control input-sm text-uppercase", @maxlength = "150" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Titulo" class="control-label col-md-3 input-sm">Nro. de Título:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Nro_Titulo, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @if (Model.Id_Origen != Variables.Peru)
+            {
+                <label for="Nro_Resolucion" id="titulofelpino" class="control-label col-md-3 input-sm">Nro. de Resolución:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Nro_Resolucion, new { @class = "form-control input-sm text-uppercase", @maxlength = "30" })
+                </div>
+            }
+            else
+            {
+                <label for="Nro_Resolucion" id="titulofelpino" hidden="hidden" class="control-label col-md-3 input-sm">Nro. de Resolución:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Nro_Resolucion, new { @class = "form-control input-sm text-uppercase", @style = "display: none", @maxlength = "30" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Situacion" class="control-label col-md-3 input-sm">Situación:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Situacion, new SelectList((List<Tb_Maestras>)ViewBag.LstSituacion, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Situacion), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Exp_Titulo" class="control-label col-md-3 input-sm">Fecha Exp. Título:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Exp_Titulo, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaExp" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Id_Situacion == Convert.ToInt32(EnumSituacionEstudio.RECONOCIDO) || Model.Id_Situacion == Convert.ToInt32(EnumSituacionEstudio.REVALIDADO))
+{
+    <div class="row" id="DivEntidad_Acreditada">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Entidad_Acreditada" class="control-label col-md-3 input-sm">Entidad Acreditada:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Entidad_Acreditada, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+}
+else
+{
+    <div class="row" id="DivEntidad_Acreditada" hidden="hidden">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Entidad_Acreditada" class="control-label col-md-3 input-sm">Entidad Acreditada:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Entidad_Acreditada, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Observacion_Est" class="control-label col-md-2 input-sm" style=" width: 12.1%;">Observación:</label>
+            <div class="col-md-10" style="width: 87.9%;">
+                @Html.TextAreaFor(m => m.Observacion_Est, new { @class = "form-control input-sm text-uppercase", @maxlength = "500" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<hr class="full-line" />
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button type="submit" value="P" name="Opcional" class="btn btn-primary">Guardar</button>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Estudio)
+@Html.Hidden("Id_Universidad", "")
+@Html.HiddenFor(m => m.Fecha_Egreso)

@@ -1,0 +1,20 @@
+﻿@using Cmp02.Entities;
+@model EmpresaMin
+
+@using (Ajax.BeginForm("Editar", "Empresa", new AjaxOptions { UpdateTargetId = "divEmpresa", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarEmpresa" }))
+{
+    <div id="divEmpresa">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                $("#vId_Persona").val("@Model.Id_Persona");
+                modal.modal("hide");
+                $("#frmEmpresa").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarEmpresa2", Model)
+        }
+    </div>
+}

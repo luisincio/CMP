@@ -1,0 +1,40 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Colegiado_Estado>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Item</th>
+            <th class="col-lg-4 text-center">Estado</th>
+            <th class="col-lg-5 text-center">Observación</th>
+            <th class="col-lg-1 text-center">Fecha</th>
+            <th class="col-lg-1 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Estado_Nombre</td>
+                    <td>@item.ObservacionEstado</td>
+                    <td>@item.Fec_Ingreso.ToString("dd/MM/yyyy")</td>
+                    <td align="center">
+                        <button class="btn btn-info btn-xs" title="Editar Consejo" onclick="fnEditarEstado('@item.Id_Persona','@item.Id_Estado');"><span class="glyphicon glyphicon-edit"></span>&nbsp</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,30 @@
+﻿@model Cmp02.Entities.Tb_Perfil
+<script>
+    $(document).ready(function () { if ("@Model.Opcional" == "OK") { modal.modal("hide"); $("#frmPerfil").submit(); } })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Perfil" class="control-label col-md-2 input-sm" style="width:16.1%!important">Nombre Perfil:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Perfil, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-2 input-sm" style="width:16.1%!important">Descripción:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.HiddenFor(m => m.Id_Perfil)
+@Html.HiddenFor(m => m.Opcional)

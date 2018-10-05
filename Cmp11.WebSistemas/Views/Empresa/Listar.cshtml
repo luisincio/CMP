@@ -1,0 +1,71 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<EmpresaMin>
+
+<script>
+    function fnEditar(a) { $.get(FullPathSrv + "Empresa/Editar", { vId: a }, function (a) { modal = FullMsg.Modal({ title: "Datos de la Empresa", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarEmpresa").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } $(document).ready(function () { $("#btnAgregar").on("click", function () { fnEditar(0) }) });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Empresa", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmEmpresa" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-4 input-sm">Por Empresa o RUC:</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("vNombre", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese razón social o número de Ruc", @maxlength = "100" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vConsejo" class="control-label col-md-3 input-sm">Por Consejo:</label>
+                                <div class="col-md-9">
+                                    @Html.DropDownList("vConsejo", new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", AppSession.Usuario.Id_Consejo_Regional), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="submit" name="vBuscar" value="1" class="btn btn-primary btn-sm">Buscar</button>
+                            <button type="button" class="btn btn-default btn-sm">Limpiar</button>
+                            <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+

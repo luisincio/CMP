@@ -1,0 +1,8 @@
+﻿@model Cmp02.Entities.Tb_Permiso
+
+@using (Ajax.BeginForm("Editar", "Permiso", new AjaxOptions { UpdateTargetId = "divPermiso", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarPermiso" }))
+{
+    <div id="divPermiso">
+        @if (Model.Opcional == "OK") { <script>modal.modal("hide");$("#frmPermiso").submit();</script> } else { @Html.Partial("_EditarPermiso2", Model) }
+    </div>
+}

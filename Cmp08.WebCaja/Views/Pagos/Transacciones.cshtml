@@ -1,0 +1,93 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model TransaccionesCobros
+<script>
+    $(document).ready(function() 
+    {
+        $("#btnGrabar").on("click", function ()
+        {
+            var Obj = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            Obj.Lote = $("#Lote").val();
+            Obj.Tipodoc = $("#Tipo").val();
+            Obj.Nrocomp = $("#NroComprobante").val();
+            Obj.Idproveedor = $("#IdProveedor").val();
+            Obj.Iddocsunat = $("#TipoDoc_Sunat").val();
+            Obj.Nrodocumento = $("#NroDocumentoSunat").val();
+            Obj.Idimpuesto = $("#PlanImpCompras").val();
+            Obj.Codicion = $("#CondicionPago").val();
+            Obj.Montocompra = $("#Compras").val();
+            Obj.Montimpuesto = $("#Impuesto").val();
+            Obj.Montomiscelaneo = $("#Miscelaneos").val();
+            Obj.Montoflete = $("#Flete").val();
+            Obj.MontoDescuento = $("#Comercial").val();
+            Obj.Fecha = $("#Fecha").val();
+            Obj.Observacion = $("#Descripcion").val();
+            Obj.Ordencompra = $("#NroOrdenCompra").val();
+            Obj.Moneda = $("#Moneda").val();
+            Obj.Tc = "0.00";
+            Obj.Afectaregcompra = $("#AfectoRC").prop("checked");
+            Obj.Afectaretencion = $("#AfectoRetencion").prop("checked");
+            Obj.Iddetracccion = $("#Detraccion").val();
+            Obj.Pordetraccion = $("#Porcentaje").val();
+            Obj.Montodetraccion = $("#MontoDetraccion").val();
+            Obj.Tipdocref = $("#DocReferencia").val();                      ///REVISAR
+            Obj.Nrodocref = $("#DocReferencia").val();                      ///REVISAR
+            Obj.Fechadocref = $("#FechaDocRef").val();
+            Obj.IdConceptoGasto = $("#ConceptoGasto").val();
+            
+            $.ajax({
+                url: FullPathSrv + "Pagos/GrabarTransaccion",
+                async: false,
+                type: "POST",
+                data: JSON.stringify(Obj),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+                },
+                success: function (a, textStatus, jqXHR)
+                {
+                    "1" == a ? (FullMsg.Alert("Se envío correctamente"), setTimeout("Limpiar()",5000) ) : FullMsg.Alert("Ocurrio un error al procesar " + a) 
+                }
+            });
+        });
+    
+    });
+
+    function Limpiar() { document.location = FullPathSrv + "Pagos/Transacciones"};
+</script>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Entrada de Transacciones de Cuentas por Pagar
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+                @using (Ajax.BeginForm("GrabarTransaccion", "Pagos", new AjaxOptions { UpdateTargetId = "divCabecera", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmCabecera" }))
+                {
+                    <div id="divCabecera">
+                        @Html.Partial("_Cabecera", Model)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" id="btnGrabar" class="btn btn-primary">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-default">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Correlativos>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-4 text-center">Usuario</th>
+            <th class="col-lg-3 text-center">Tipo Documento</th>
+            <th class="col-lg-1 text-center">Serie</th>
+            <th class="col-lg-1 text-center">Inicio</th>
+            <th class="col-lg-1 text-center">Fin</th>
+            <th class="col-lg-0 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+        <tr>
+            <td class="text-center">@Count</td>
+            <td>@item.NombreCompleto</td>
+            <td>@item.TipoDocumento</td>
+            <td>@item.Serie</td>
+            <td>@item.Inicio</td>
+            <td>@item.Fin</td>
+            <td align="center">
+                <button class="btn btn-info btn-xs" title="Editar Documento" onclick="fnEditar('@item.Id_Sucursal', '@item.Id_Tidodocumento', '@item.Serie');"><span class="glyphicon glyphicon-edit"></span>&nbsp</button>
+                <button class="btn btn-danger btn-xs" title="Eliminar Documento" onclick="fnEliminar('@item.Id_Sucursal', '@item.Id_Tidodocumento', '@item.Serie');"><span class="glyphicon glyphicon-trash"></span>&nbsp</button>
+                <button class="btn btn-default btn-xs" title="Asociar a Usuario" onclick="fnAsignar('@item.Id_Sucursal', '@item.Id_Tidodocumento', '@item.Serie');"><span class="glyphicon glyphicon-user"></span>&nbsp</button>
+            </td>
+        </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

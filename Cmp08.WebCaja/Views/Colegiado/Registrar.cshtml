@@ -1,0 +1,88 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model ColegiadoMicro
+@{
+    ViewBag.Title = "Registrar Datos Personales";
+}
+
+<script>
+    var modal;
+    $(document).ready(function () {
+        $('.panel-collapse:not(".in")').collapse("show");
+        $("#btnGrabar").on("click", function ()
+        {
+            FullMsg.Confirm("¿Seguro de actualizar los datos del colegiado?", function (a) { a && $("#frmColegiado").submit() })
+        });
+        $("#btnRegresar").on("click", function () {
+            document.location = FullPathSrv + "Colegiado/LISTARAUXILIAR";
+        })
+    })
+
+</script>
+
+@Html.Hidden("#ID_UBIGEO", "")
+
+@using (Ajax.BeginForm("Registrar", "Colegiado", new AjaxOptions { UpdateTargetId = "accordion", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmColegiado" }))
+{
+    <div class="panel-group" id="accordion">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Datos Principales del Colegiado
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_DatosPrincipales", Model)
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Dirección del Colegiado
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div id="divDireccion" class="panel-body">
+                    @Html.Partial("_Direccion", Model)
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Medios de Contacto del Colegiado
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+                <div id="divMedios" class="panel-body">
+                    @Html.Partial("_ListaMedios", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6 text-right">
+                    <button type="button" id="btnGrabar" class="btn btn-primary">Grabar</button>
+                    <button type="button" id="btnRegresar" class="btn btn-default">Regresar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

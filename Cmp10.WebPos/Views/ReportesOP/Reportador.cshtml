@@ -1,0 +1,127 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model string
+
+<script>
+    function fnMatricula(a) { document.location = FullPathSrv + "Colegiado/Registrar?vId=" + a }
+    $(document).ready(function () {
+        $("#btnFecCmpInicial").click(function () { $("#vFecRegInicial").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vFecRegInicial").datepicker("show") });
+        $("#btnFecCmpFinal").click(function () { $("#vFecRegFinal").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vFecRegFinal").datepicker("show") });
+
+        $("#btnBuscar").on("click", function () {
+            $("#frmBandeja").submit();
+        })
+    });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("EnviarLista", "ReportesOP", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmBandeja" }))
+    {
+        @Html.Hidden("vTipo", (int)ViewBag.Tipo)
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    @if ((int)ViewBag.Tipo == 1)
+                    {
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            Registro de Ventas de Ingresos
+                            @*Criterios de Búsqueda*@
+                        </a>
+                    }
+                    else if ((int)ViewBag.Tipo == 2)
+                    {
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            Registro de Compras
+                        </a>
+                    }
+                    else if ((int)ViewBag.Tipo == 3)
+                    {
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            Libro Diario
+                        </a>
+                    }
+                    else
+                    {
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            Libro Mayor
+                        </a>
+                    }
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vFecRegInicial" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Fecha Inicial:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vFecRegInicial", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecCmpInicial" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vFecRegFinal" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Fecha Final:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vFecRegFinal", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecCmpFinal" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnBuscar"> Buscar</button>
+                            <button type="button" class="btn btn-default btn-sm" id="btnLimpiar"> Limpiar</button>
+                        </div>
+                        @*<div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-3 input-sm" style="padding-left: 0px; padding-right: 0px;">Consejo:</label>
+                                <div class="col-md-9" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vNombre", AppSession.Usuario.Consejo_Regional, new { @class = "form-control input-sm toupper next", @maxlength = "100" })
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                    @*<div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnBuscar"> Buscar</button>
+                            <button type="button" class="btn btn-default btn-sm" id="btnLimpiar"> Limpiar</button>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados del Reporte
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body" style="height:400px;">
+                    @Html.Partial("_FullDetail", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

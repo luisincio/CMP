@@ -1,0 +1,103 @@
+﻿@using System.Data
+@using Cmp02.Entities;
+@model Cmp09.WebCtaCte.Models.BancosLocal[]
+
+<script>
+    
+    
+    $(document).ready(function () {
+        $("#btnPagar").on("click", function ()
+        {
+            if ($("#TblDetalle tr").length == 0)
+            {
+                FullMsg.Alert("Cargue un archivo o vuelva a cargarlo!");
+            }
+            else
+            {
+                FullMsg.Confirm("¿Seguro de procesar los pagos de planilla?", function (a) {
+                    if (a) {
+                        $.get(FullPathSrv + "Cobranza/Procesar_PagoBanco", function (a) {
+                            1 == a ? FullMsg.Alert("Se proceso con exito!") : FullMsg.Alert("Ocurrio un error, intente volver a cargar la pagina y el archivo")
+                        })
+                    }
+                })
+            }
+        })
+    });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Html.BeginForm("Bancos_Archivo", "Cobranza", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken();
+        @Html.ValidationSummary();
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="file" class="form-control" name="vUploadfile" id="vUploadfile" />
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="submit" name="vBuscar" value="submit" class="btn btn-primary btn-sm">Cargar Archivo</button>
+                            <button type="button" id="btnPagar" class="btn btn-default btn-sm">Ejecutar Pago</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @if (Model != null)
+                    {
+                        <table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+                            <thead class="tablahead" style="background-color: #D6C9DB; ">
+                                <tr>
+                                    <th class="col-lg-0 text-center">Item</th>
+                                    <th class="col-lg-0 text-center">Colegiatura</th>
+                                    <th class="col-lg-0 text-center">Nombre Colegiado</th>
+                                    <th class="col-lg-0 text-center">Dni</th>
+                                    <th class="col-lg-0 text-center">Monto</th>
+                                    <th class="col-lg-0 text-center">Fecha Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TblDetalle">
+                                @{
+                                    int Count = 0;
+                                    foreach (var vRow in Model)
+                                    {
+                                        Count++;
+                                        <tr>
+                                            <td class="text-center">@Count</td>
+                                            <td>@vRow.Colegiatura</td>
+                                            <td>@vRow.Nombre_Colegiado</td>
+                                            <td>@vRow.Dni</td>
+                                            <td>@vRow.Monto</td>
+                                            <td>@vRow.Fecha_Pago</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

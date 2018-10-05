@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4E9AE6BE-8868-4FA3-9A8B-1C33ECD317A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cmp01.Utilities</RootNamespace>
+    <AssemblyName>Cmp01.Utilities</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>01Binaries\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>01Binaries\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="02Global\Enumerados.cs" />
+    <Compile Include="02Global\Variables.cs" />
+    <Compile Include="03Web\EmptyStringDataAnnotations.cs" />
+    <Compile Include="04Log\ILogger.cs" />
+    <Compile Include="04Log\Log4NetWrapper.cs" />
+    <Compile Include="04Log\LogHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="01Binaries\DataAnnotationsExtensions.dll" />
+    <Content Include="01Binaries\Excel.dll" />
+    <Content Include="01Binaries\FileHelpers.dll" />
+    <Content Include="01Binaries\log4net.dll" />
+    <Content Include="01Binaries\Microsoft.AspNet.Identity.Core.dll" />
+    <Content Include="01Binaries\Microsoft.AspNet.Identity.EntityFramework.dll" />
+    <Content Include="01Binaries\Microsoft.AspNet.Identity.Owin.dll" />
+    <Content Include="01Binaries\Microsoft.Owin.dll" />
+    <Content Include="01Binaries\Microsoft.Owin.Security.Cookies.dll" />
+    <Content Include="01Binaries\Microsoft.Owin.Security.dll" />
+    <Content Include="01Binaries\Microsoft.ReportViewer.Common.dll" />
+    <Content Include="01Binaries\Microsoft.ReportViewer.ProcessingObjectModel.DLL" />
+    <Content Include="01Binaries\Microsoft.ReportViewer.WebForms.DLL" />
+    <Content Include="01Binaries\Newtonsoft.Json.dll" />
+    <Content Include="01Binaries\Owin.dll" />
+    <Content Include="01Binaries\System.IdentityModel.Operations.dll" />
+    <Content Include="01Binaries\System.IdentityModel.Tokens.ValidatingIssuerNameRegistry.dll" />
+    <Content Include="01Binaries\System.Web.Extensions.dll" />
+    <Content Include="01Binaries\System.Web.Mvc.dll" />
+    <Content Include="01Binaries\System.Web.Optimization.dll" />
+    <Content Include="01Binaries\System.Web.WebPages.Deployment.dll" />
+    <Content Include="01Binaries\System.Web.WebPages.dll" />
+    <Content Include="01Binaries\System.Web.WebPages.Razor.dll" />
+    <Content Include="01Binaries\Utildatatool.dll" />
+    <Content Include="01Binaries\Utilsdatatool.dll" />
+    <Content Include="01Binaries\WebGrease.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

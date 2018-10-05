@@ -1,0 +1,329 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model string
+
+<script>
+    function fnMatricula(a) { document.location = FullPathSrv + "Colegiado/Registrar?vId=" + a }
+    $(document).ready(function ()
+    {
+        $("#btnAgregar").on("click", function () { fnMatricula(0) })
+        $("#btnLimpiar").on("click", function () { $("#vNombre").val(""), $("#vEstado").val("@Convert.ToInt32(EnumEstado.PRE_EVALUACION)") })
+        $("#btnFecCmpInicial").click(function () { $("#vFecCmpInicial").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vFecCmpInicial").datepicker("show") });
+        $("#btnFecCmpFinal").click(function () { $("#vFecCmpFinal").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vFecCmpFinal").datepicker("show") });
+        $("#btnFecMurioInicial").click(function () { $("#vAnioIniFallecido").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vAnioIniFallecido").datepicker("show") });
+        $("#btnFecMurioFinal").click(function () { $("#vAnioFinFallecido").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#vAnioFinFallecido").datepicker("show") });
+
+        $("#btnBuscar").on("click", function ()
+        {
+            var a = "";
+            $('input[name="vConsejos"]:checked').each(function () {
+                a += $(this).val() + "$";
+            });
+            $("#vFullConsejos").val(a);
+
+            var b = "";
+            $('input[name="vEstados"]:checked').each(function () {
+                b += $(this).val() + "$";
+            });
+            $("#vFullEstados").val(b);
+
+            var c = "";
+            $('input[name="vTiposDocumentos"]:checked').each(function () {
+                c += $(this).val() + "$";
+            });
+            $("#vFullTiposDocumentos").val(c);
+
+            var d = "";
+            $('input[name="vEspecialidad"]:checked').each(function () {
+                d += $(this).val() + "$";
+            });
+            $("#vFullEspecialidad").val(d);
+
+            $("#frmBandeja").submit();
+        })
+    });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("EnviarLista", "Consultor", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmBandeja" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control input-sm toupper next" style="font-family:Calibri; font-size:11.4px!important; width: 98%; height: 96px; overflow-y: scroll">
+                                    @foreach (var item in (List<Tb_Maestras>)ViewBag.LstConsejo)
+                                    {
+                                        if (item.Id_Maestras == 0)
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; background-color: #F1F1F1; width:100%;">
+                                        <input type="checkbox" name="vConsejos" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                        else
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; width: 100%;">
+                                        <input type="checkbox" name="vConsejos" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                    }
+                                </div>
+                                <input type="hidden" name="vFullConsejos" id="vFullConsejos" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control input-sm toupper next" style ="font-family:Calibri; font-size:11.4px!important; width:98%; height:96px; overflow-y: scroll">
+                                    @foreach (var item in (List<Tb_Maestras>)ViewBag.LstEstadosCMP)
+                                    {
+                                        if (item.Id_Maestras == 0)
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; background-color: #F1F1F1; width:100%;">
+                                        <input type="checkbox" name="vEstados" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                        else
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; width: 100%;">
+                                        <input type="checkbox" name="vEstados" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                    }
+                                </div>
+                                <input type="hidden" name="vFullEstados" id="vFullEstados" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control input-sm toupper next" style ="font-family:Calibri; font-size:11.4px!important; width:98%; height:96px; overflow-y: scroll">
+                                    @foreach (var item in (List<Tb_Maestras>)ViewBag.LstTipoDocumento)
+                                    {
+                                        if (item.Id_Maestras == 0)
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; background-color: #F1F1F1; width:100%;">
+                                        <input type="checkbox" name="vTiposDocumentos" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                        else
+                                        {
+                                    <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; width: 100%;">
+                                        <input type="checkbox" name="vTiposDocumentos" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                    </label>
+                                        }
+                                    }
+                                </div>
+                                <input type="hidden" name="vFullTiposDocumentos" id="vFullTiposDocumentos" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control input-sm toupper next" style="font-family:Calibri; font-size:11.4px!important; width:98%; height:96px; overflow-y: scroll">
+                                    @foreach (var item in (List<Tb_Maestras>)ViewBag.LstEspecialidad)
+                                    {
+                                        if (item.Id_Maestras == 0)
+                                        {
+                                            <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; background-color: #F1F1F1; width:100%;">
+                                                <input type="checkbox" name="vEspecialidad" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label for="@item.Id_Maestras" style="font-weight: normal !important; margin-bottom: 0px !important; width: 100%;">
+                                                <input type="checkbox" name="vEspecialidad" style="margin-top:0!important;" value="@item.Id_Maestras" id="@item.Id_Maestras"> @item.Descripcion
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                                <input type="hidden" name="vFullEspecialidad" id="vFullEspecialidad" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vEstadoCivil" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Estado Civil:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.DropDownList("vEstadoCivil", new SelectList((List<Tb_Maestras>)ViewBag.LstEstadoCivil, "ID_MAESTRAS", "DESCRIPCION"), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vSexo" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Sexo:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.DropDownList("vSexo", new SelectList((List<Tb_Maestras>)ViewBag.LstSexo, "ID_MAESTRAS", "DESCRIPCION"), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vCodCmpInicial" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Nro. CMP Inicial:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vCodCmpInicial", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vCodCmpFinal" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Nro. CMP Final:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vCodCmpFinal", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vFecCmpInicial" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Fec. CMP Inicial:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vFecCmpInicial", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecCmpInicial" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vFecCmpFinal" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Fec. CMP Final:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vFecCmpFinal", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecCmpFinal" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Nombre Medico:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vNombre", null, new { @class = "form-control input-sm toupper next", @maxlength = "100" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vUniversidad" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Universidad:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vUniversidad", null, new { @class = "form-control input-sm toupper next", @maxlength = "100" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vEdadInicial" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Edad Entre:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vEdadInicial", null, new { @class = "form-control input-sm toupper next", @type = "number", @min = "0", @max = "99", @onkeypress = "if(this.value.length==2) return false;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vEdadFinal" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Edad Hasta:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    @Html.TextBox("vEdadFinal", null, new { @class = "form-control input-sm toupper next", @type = "number", @min = "0", @max = "99", @onkeypress = "if(this.value.length==2) return false;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vAnioIniFallecido" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Falleció entre:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vAnioIniFallecido", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecMurioInicial" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    @*@Html.TextBox("vAnioIniFallecido", null, new { @class = "form-control input-sm toupper next", @type = "number", @min = "1900", @max = "2100", @onkeypress = "if(this.value.length==4) return false;" })*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vAnioFinFallecido" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Falleció hasta:</label>
+                                <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                    <div class="input-group">
+                                        @Html.TextBox("vAnioFinFallecido", null, new { @class = "form-control input-sm toupper next", @maxlength = "10" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnFecMurioFinal" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    @*@Html.TextBox("vAnioFinFallecido", null, new { @class = "form-control input-sm toupper next", @type = "number", @min = "1900", @max = "2100", @onkeypress = "if(this.value.length==4) return false;" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        @*<div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="vNombre" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Nombre Medico:</label>
+                                    <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                        @Html.TextBox("vNombre", null, new { @class = "form-control input-sm toupper next", @maxlength = "100" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="vUniversidad" class="control-label col-md-5 input-sm" style="padding-left: 0px; padding-right: 0px;">Universidad:</label>
+                                    <div class="col-md-7" style="padding-left: 5px; padding-right: 5px;">
+                                        @Html.TextBox("vUniversidad", null, new { @class = "form-control input-sm toupper next", @maxlength = "100" })
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnBuscar"> Buscar</button>
+                            <button type="button" class="btn btn-default btn-sm" id="btnLimpiar"> Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body" style="height:400px;">
+                    @Html.Partial("_FullDetail", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

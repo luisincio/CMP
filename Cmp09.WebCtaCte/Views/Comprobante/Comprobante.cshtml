@@ -1,0 +1,93 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Comprobantecabecera
+@{
+    ViewBag.Title = "Registrar Comprobante";
+}
+<script>
+    function fnProcesar() { FullMsg.Confirm("¿Seguro de procesar el comprobante?", function (a) { a && (parseInt($("#Id_Colegiado").val()) > 0 ? $.get(FullPathSrv + "Comprobante/Procesar", { vId: $("#Id_Colegiado").val(), vId_Comprobante: $("#Id_Comprobante").val() }, function (a) { "1" == a ? (FullMsg.Alert("Se envío correctamente"), dedos() ): FullMsg.Alert("Ocurrio un error al procesar " + a) }) : FullMsg.Alert("Debe completar los datos")) }) }
+    //function fnEmitir() { FullMsg.Confirm("¿Seguro de emitir el comprobante?", function (a) { a && (parseInt($("#Id_Colegiado").val()) > 0 ? $.get(FullPathSrv + "Comprobante/Emitir", { vId: $("#Id_Comprobante").val() }, function (a) { "OK" == a.Opcional ? FullMsg.Alert("Se envío correctamente") : FullMsg.Alert("Ocurrio un error al procesar") }) : FullMsg.Alert("Debe completar los datos")) }) }
+    function fnEliminarServicio(a) { FullMsg.Confirm("¿Seguro de eliminar este articulo?", function (b) { b && $.getJSON(FullPathSrv + "Comprobante/EliminarServicio", { vId: a }).done(function (a) { "1" == a.rpta ? $("#frmDetalle").submit() : FullMsg.Alert("Ocurrio un error: " + a.mensaje) }).fail(function (a) { FullMsg.Alert("No se pudo conectar al servidor") }) }) } var modal;
+
+    function Felpita()
+    {
+        var Subtotal = 0;
+        $('#tblFacDEt tr').each(function ()
+        {
+            Subtotal = Subtotal + parseFloat($(this).find("td").eq(5).html());
+        });
+        var Igv = Subtotal * parseFloat("@Cmp01.Utilities.Variables.Igv");
+        var Total = Subtotal + Igv;
+        $("#lblMonto").val(Subtotal.toFixed(2));
+        $("#lblIgv").val(Igv.toFixed(2));
+        $("#lblTotal").val(Total.toFixed(2));
+    }
+</script>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Comprobante
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+                @using (Ajax.BeginForm("Comprobante", "Comprobante", new AjaxOptions { UpdateTargetId = "divCabecera", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmCabecera" }))
+                {
+                    <div id="divCabecera">
+                        @Html.Partial("_Cabecera", Model)
+                    </div>
+                }
+
+                <hr />
+                @using (Ajax.BeginForm("DetalleGet", "Comprobante", new AjaxOptions { UpdateTargetId = "divDetalle", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmDetalle" }))
+                {
+                    <div class="row">
+                        <div class="col-md-12" id="divDetalle">
+                            @Html.Partial("_Detalle", Model.Detalle)
+                        </div>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Monto" class="control-label col-md-4 input-sm">SubTotal:</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.Monto, new { @id = "lblMonto", @class = "form-control input-sm text-uppercase text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Igv" class="control-label col-md-4 input-sm">Igv:</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.Igv, new { @id = "lblIgv", @class = "form-control input-sm text-uppercase text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Descuento" class="control-label col-md-4 input-sm">Descuento:</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.Descuento, new { @id = "lblDescuento", @class = "form-control input-sm text-uppercase text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Total" class="control-label col-md-4 input-sm">Total:</label>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.Total, new { @id = "lblTotal", @class = "form-control input-sm text-uppercase text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

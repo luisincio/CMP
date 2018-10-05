@@ -1,0 +1,188 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Colegiado_Estado
+<script>
+    $(document).ready(function ()
+    {
+        $("#Id_Estado_Colegiado").change(function ()
+        {
+            $("#Fechas, #FechasMurio").prop("hidden", true);
+            $("#Fec_Inicio, #Fec_Fin, #Fec_Fallecio").val("")
+            if (($(this).val() == "@Convert.ToInt32(EnumEstadoMatricula.INHABILITADO_TEMPORAL)") || $(this).val() == "@Convert.ToInt32(EnumEstadoMatricula.SUSPENDIDO)")
+            {
+                $("#Fechas").prop("hidden", false);
+                $("#Fec_Inicio, #Fec_Fin").val("@Variables.Hoy.ToShortDateString()");
+            }
+            else if ($(this).val() == "@Convert.ToInt32(EnumEstadoMatricula.FALLECIDO)") {
+                $("#FechasMurio").prop("hidden", false);
+                $("#Fec_Fallecio").val("@Variables.Hoy.ToShortDateString()");
+            }
+        })
+
+        $("#btnFec_Inicio").click(function ()
+        {
+            $("#Fec_Inicio").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fec_Inicio").datepicker("show")
+        });
+        
+        $("#btnFec_Fin").click(function ()
+        {
+            $("#Fec_Fin").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#Fec_Fin").datepicker("show")
+        });
+
+        $("#btnFec_Fallecio").click(function ()
+        {
+            $("#Fec_Fallecio").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.AddYears(1).ToShortDateString()" }), $("#Fec_Fallecio").datepicker("show")
+        });
+        
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Estado_Colegiado" class="control-label col-md-4 input-sm">Estado:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Estado_Colegiado, new SelectList((List<Tb_Maestras>)ViewBag.LstEstado, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Estado_Colegiado), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Ingreso" class="control-label col-md-4 input-sm">Fecha Registro:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Fec_Ingreso, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Id_Estado_Colegiado == Convert.ToInt32(EnumEstadoMatricula.INHABILITADO_TEMPORAL) || Model.Id_Estado_Colegiado == Convert.ToInt32(EnumEstadoMatricula.SUSPENDIDO)) 
+{
+<div class="row" id="Fechas">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Inicio" class="control-label col-md-4 input-sm">Fecha Inicio:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fec_Inicio, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFec_Inicio" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Fin" class="control-label col-md-4 input-sm">Fecha Fin:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fec_Fin, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFec_Fin" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+else
+{
+<div class="row" id="Fechas" hidden="hidden">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Inicio" class="control-label col-md-4 input-sm">Fecha Inicio:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fec_Inicio, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFec_Inicio" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fec_Fin" class="control-label col-md-4 input-sm">Fecha Fin:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fec_Fin, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFec_Fin" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@if (Model.Id_Estado_Colegiado == Convert.ToInt32(EnumEstadoMatricula.FALLECIDO))
+{
+    <div class="row" id="FechasMurio">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Fec_Fallecio" class="control-label col-md-4 input-sm">Fecha Falleció:</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Fec_Fallecio, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                        <span class="input-group-btn">
+                            <button type="button" id="btnFec_Fallecio" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+}
+else
+{
+    <div class="row" id="FechasMurio" hidden="hidden">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Fec_Fallecio" class="control-label col-md-4 input-sm">Fecha Falleció:</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Fec_Fallecio, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                        <span class="input-group-btn">
+                            <button type="button" id="btnFec_Fallecio" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="ObservacionEstado" class="control-label col-md-2 input-sm" style="width: 16.1%">Observación:</label>
+            <div class="col-md-10" style="width: 83.9%;">
+                @Html.TextAreaFor(m => m.ObservacionEstado, new { @class = "form-control input-sm text-uppercase", @maxlength = "500" })
+            </div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Estado)
+@Html.HiddenFor(m => m.Opcional)

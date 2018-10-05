@@ -1,0 +1,93 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<Tb_Cobranza>
+<script>
+    $(document).ready(function ()
+    {
+        $('input[name="cbxPagar"]').on("change", function ()
+        {
+            $("#SaldoActual").val("0.00");
+            $('input[name="cbxPagar"]:checked').each(function () {
+                var a = parseFloat($("#SaldoActual").val()),
+                    //b = parseFloat($(this).attr("datafull"));
+                    b = parseFloat($(this).parents("tr").find("input[name='Monto']").val());
+                $("#SaldoActual").val((a + b).toFixed(2))
+            })
+        });
+
+        $('input[name="Monto"]').bind("blur", function () {
+            $(this).val(parseFloat($(this).val()).toFixed(2));
+        });
+
+    })
+</script>
+
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-1 text-center">Colegiado</th>
+            <th class="col-lg-3 text-center">Nombre Completo</th>
+            <th class="col-lg-1 text-center">DNI</th>
+            <th class="col-lg-0 text-center">Fecha</th>
+            <th class="col-lg-0 text-center">Año</th>
+            <th class="col-lg-0 text-center">Mes</th>
+            <th class="col-lg-2 text-center">Servicio</th>
+            <th class="col-lg-1 text-center">Monto</th>
+            @*<th class="col-lg-1 text-center">Descuento</th>*@
+            <th class="col-lg-0 text-center">Activar</th>
+            <th class="col-lg-0 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Colegiatura</td>
+                    <td>@item.Nombre_Completo</td>
+                    <td>@item.Nro_Documento</td>
+                    <td>@item.Fecha.ToShortDateString()</td>
+                    <td align="center">@item.Año</td>
+                    <td align="center">@item.Mes</td>
+                    <td>@item.Servicio</td>
+                    @*<td align="right">@item.Monto</td>*@
+                    <td class="text-right" style="padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 0px; ">
+                        @Html.TextBox("Monto", item.Monto, new { @type = "number", @class = "form-control input-sm text-uppercase", @dataFull = item.Id_Cobro })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBox("cbxPagar", new { @value = item.Id_Cobro, @datafull = item.Monto })
+                    </td>
+
+                    <td align="center">
+                        <button type="button" class="btn btn-danger btn-xs" title="Quitar Medico" onclick="fnQuitarDoctor('@item.Id_Colegiado');"><span class="glyphicon glyphicon-erase"></span>&nbsp</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<div class="row">
+    <div class="col-md-9">
+
+    </div>
+    <div class="col-md-3 text-right">
+        <div class="form-group">
+            <label class="control-label col-md-5 input-sm">Saldo Actual:</label>
+            <div class="col-md-7">
+                @Html.TextBox("SaldoActual", "0.00", new { @class = "form-control input-sm toupper next text-right", @style = "color:red; font-size:15px; font-weight: bold;", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>

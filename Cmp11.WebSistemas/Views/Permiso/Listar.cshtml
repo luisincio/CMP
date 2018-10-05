@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Permiso>
+
+<script>
+    function fnEliminar(a) { FullMsg.Confirm("¿Seguro de eliminar el Permiso?", function (b) { b && $.get(FullPathSrv + "Permiso/Eliminar", { vId: a }, function (a) { $("#frmPermiso").submit() }) }) } function fnEditar(a) { $.get(FullPathSrv + "Permiso/Editar", { vId: a }, function (a) { modal = FullMsg.Modal({ title: "Datos de Permiso", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarPermiso").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } $(document).ready(function () { $("#btnLimpiar").on("click", function () { $("#vValor").val(""), $("#frmPermiso").submit() }), $("#btnAgregar").on("click", function () { fnEditar(0) }) });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Permiso", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmPermiso" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-3 input-sm">Por Etiqueta o Controladora:</label>
+                                <div class="col-md-9">
+                                    @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre de etiqueta o controladora", @maxlength = "50" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                <button type="button" id="btnLimpiar" class="btn btn-default btn-sm">Limpiar</button>
+                                <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

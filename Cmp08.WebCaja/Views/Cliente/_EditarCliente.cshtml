@@ -1,0 +1,9 @@
+﻿@using Cmp02.Entities;
+@model ClienteClover
+
+@using (Ajax.BeginForm("Registro", "Cliente", new AjaxOptions { UpdateTargetId = "divCliente", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarCliente" }))
+{
+    <div id="divCliente">
+        @Html.Partial("_EditarCliente2", Model);
+    </div>
+}

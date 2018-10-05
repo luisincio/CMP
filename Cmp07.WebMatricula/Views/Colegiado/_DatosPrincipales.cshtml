@@ -1,0 +1,209 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Persona_Natural
+<link href="~/Content/FullFile.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        if ("@Model.Opcional" == "OK") { FullMsg.Alert("Se grabaron los datos correctamente"); if (parseInt("@Model.Edad") > 0) { $("#Edad").val("@Model.Edad") } } $("#Origen").change(function () { $("#Lugar_Nacimiento").val("") });
+        $("#btnFechaNacio").click(function () {
+            $("#Fecha_Nacio").datepicker({ dateFormat: "dd/mm/yy", changeMonth: true, changeYear: true, constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }),
+                $("#Fecha_Nacio").datepicker("show")
+        });
+
+        if ("@Model.Fecha_Nacio.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Nacio").val("@Variables.Hoy.ToShortDateString()") } $("#DivImagen").on("dblclick", function () { parseInt($("#Id_Persona").val()) > 0 ? $.get(FullPathSrv + "Colegiado/Actualizar_Imagen", { vId: $("#Id_Persona").val() }, function (a) { modal = FullMsg.Modal({ title: "Actualizar Imagen", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#Frm01").submit(), modal.modal("hide"), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) : FullMsg.Alert("Primero debe grabar los datos personales correctamente") }); $("#DivFirma").on("dblclick", function () { parseInt($("#Id_Persona").val()) > 0 ? $.get(FullPathSrv + "Colegiado/Actualizar_Firma", { vId: $("#Id_Persona").val() }, function (a) { modal = FullMsg.Modal({ title: "Actualizar Firma", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#Frm02").submit(), modal.modal("hide"), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) : FullMsg.Alert("Primero debe grabar los datos personales correctamente") }); $("#Lugar_Nacimiento").autocomplete({ source: function (a, b) { $.getJSON(FullPathSrv + "Cliente/ListarUbigeo", { vOrigen: $("#Origen").val(), vValor: $("#Lugar_Nacimiento").val() }, b) }, minLength: 3, select: function (a, b) { $("#ID_UBIGEO").val(b.item.id) } }); GetImagen(); GetFirma()
+    })
+    function GetImagen() { $("#DivImagen").append("<img style='height:200px; width:150px; object-fit:contain' src='" + "@Url.Action("Obtener_Imagen", "Colegiado", new { vId = Model.Id_Persona })" + "' alt=''>") }
+    function GetFirma() { $("#DivFirma").append("<img style='height:50px; width:100%; object-fit:contain' src='" + "@Url.Action("Obtener_Firma", "Colegiado", new { vId = Model.Id_Persona })" + "' alt=''>") }
+</script>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-4 input-sm">Código:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Colegiado, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-4 input-sm">Fecha:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Fec_Colegiado, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label col-md-4 input-sm">Estado:</label>
+            <div class="col-md-8">
+                @if (Model.Estado_Actual == "SUSPENDIDO" || Model.Estado_Actual == "INHABILITADO TEMPORAL" || Model.Estado_Actual == "EXPULSADO")
+                {
+                    @Html.TextBoxFor(m => m.Estado_Actual, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly", @style = "color:red" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(m => m.Estado_Actual, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Apellido_Paterno" class="control-label col-md-3 input-sm">Apellido Paterno:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Apellido_Paterno, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Apellido_Materno" class="control-label col-md-3 input-sm">Apellido Materno:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Apellido_Materno, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nombres" class="control-label col-md-3 input-sm">Nombres:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Nombres, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Grupo_Sanguineo" class="control-label col-md-3 input-sm">Grupo Sanguíneo:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Grupo_Sanguineo, new SelectList((List<Tb_Maestras>)ViewBag.LstSanguineo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Grupo_Sanguineo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Documento" class="control-label col-md-3 input-sm">Tipo de Documento:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Tipo_Documento, new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Documento), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Documento" class="control-label col-md-3 input-sm">Nro. Documento:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Nro_Documento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Estado_Civil" class="control-label col-md-3 input-sm">Estado Civil:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Tipo_Estado_Civil, new SelectList((List<Tb_Maestras>)ViewBag.LstEstCivil, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Estado_Civil), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Sexo" class="control-label col-md-3 input-sm">Sexo:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Sexo, new SelectList((List<Tb_Maestras>)ViewBag.LstGenero, "ID_MAESTRAS", "DESCRIPCION", Model.Sexo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Nacio" class="control-label col-md-3 input-sm">Fecha Nacimiento:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Nacio, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaNacio" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" style="float:right">
+        <div class="form-group">
+            <label class="control-label col-md-3 input-sm">Fotografía:</label>
+            <div class="col-md-9">
+                <div class="file-preview">
+                    <div class="file-preview-frame" id="DivImagen" title="Doble clic para agregar fotografía">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Edad" class="control-label col-md-3 input-sm">Edad:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Edad, new { @class = "form-control input-sm text-uppercase", @maxlength = "2" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Origen" class="control-label col-md-3 input-sm">Origen:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Origen, new SelectList((List<Tb_Maestras>)ViewBag.LstOrigen, "ID_MAESTRAS", "DESCRIPCION", Model.Origen), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Lugar_Nacimiento" class="control-label col-md-3 input-sm">Lugar Nacimiento:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Lugar_Nacimiento, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Observacion" class="control-label col-md-3 input-sm">Observación:</label>
+            <div class="col-md-9">
+                @Html.TextAreaFor(m => m.Observacion, new { @class = "form-control input-sm noresize text-uppercase", @maxlength = "500" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label col-md-3 input-sm">Firma:</label>
+            <div class="col-md-9">
+                <div class="file-preview-frame text-center" id="DivFirma" style="height:50px;" title="Doble clic para agregar firma">
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr class="full-line" />
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button type="submit" value="P" name="Opcional" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-default">Cancelar</button>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Estado_Actual)

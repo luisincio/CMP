@@ -1,0 +1,93 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<Cmp02.Entities.Tb_Correlativos>
+
+<script>
+    function fnEliminar(a, w, z)
+    {
+        FullMsg.Confirm("¿Seguro de eliminar el documento?", function (b) { b && $.get(FullPathSrv + "Correlativo/Eliminar", { vId_Sucursal: a, vId_Tidodocumento: w, vSerie: z }, function (a) { $("#frmParametro").submit() }) })
+    }
+    function fnEditar(a, w, z)
+    {
+        $.get(FullPathSrv + "Correlativo/Editar", { vId_Sucursal: a, vId_Tidodocumento: w, vSerie: z }, function (a) { modal = FullMsg.Modal({ title: "Configuración del Documento", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return fnValidarParametro(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") })
+    }
+    function fnAsignar(a, w, z)
+    {
+        $.get(FullPathSrv + "Correlativo/Asociacion", { vId_Sucursal: a, vId_Tidodocumento: w, vSerie: z }, function (a) { modal = FullMsg.Modal({ title: "Asignar Persona al Documento", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return fnValidarParametro2(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") })
+    }
+    
+    function fnValidarParametro()
+    {
+        0 == $("#Id_Documento_GP").val().length && 0 == $("#Inicio").val().length && 0 == $("#Fin").val().length && 0 == $("#Serie").val().length ? FullMsg.Alert("Debe Registrar todos los Valores") : $("#frmEditarParametro").submit()
+    }
+
+    function fnValidarParametro2() {
+        $("#Pagina").val() == "1" ? FullMsg.Alert("No se puede grabar al usuario") : $("#frmEditarUsuario").submit()
+    }
+
+    $(document).ready(function ()
+    {
+        $("#btnLimpiar").on("click", function () { $("#vId_Sucursal, #vId_Tidodocumento").val(""), $("#frmParametro").submit() }),
+        $("#btnAgregar").on("click", function () { fnEditar(0, 0, 0) })
+    });
+
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Correlativo", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmParametro" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="vId_Sucursal" class="control-label col-md-3 input-sm">Por Consejo:</label>
+                                <div class="col-md-9">
+                                    @Html.DropDownList("vId_Sucursal", new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="vId_Tidodocumento" class="control-label col-md-3 input-sm">Documento:</label>
+                                <div class="col-md-9">
+                                    @Html.DropDownList("vId_Tidodocumento", new SelectList((List<Tb_Maestras>)ViewBag.LstTipoDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                <button type="button" id="btnLimpiar" class="btn btn-default btn-sm">Limpiar</button>
+                                <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

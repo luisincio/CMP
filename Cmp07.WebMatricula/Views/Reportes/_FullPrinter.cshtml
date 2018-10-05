@@ -1,0 +1,5 @@
+﻿@model string
+@{ Layout = null; }
+<body style="margin:0px;padding:0px;overflow:hidden">
+    @Html.Raw(HttpUtility.HtmlDecode(ViewBag.Url))
+</body>

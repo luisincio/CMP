@@ -1,0 +1,25 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Medio_Contacto
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Medio_Contacto" class="control-label col-md-4 input-sm">Tipo de Contacto:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Tipo_Medio_Contacto, new SelectList((List<Tb_Maestras>)ViewBag.LstMedio, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Medio_Contacto), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nombre_Medio_Contacto" class="control-label col-md-4 input-sm">Descripción:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nombre_Medio_Contacto, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Medio_Contacto)
+@Html.HiddenFor(m => m.Opcional)
+@Html.Hidden("vId_Persona", Model.Id_Persona)

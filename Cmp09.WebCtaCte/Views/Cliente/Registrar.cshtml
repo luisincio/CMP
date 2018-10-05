@@ -1,0 +1,153 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Cliente
+@{
+    ViewBag.Title = "Registrar Datos Personales";
+}
+
+<script>
+    var modal;
+    $(document).ready(function()
+    {
+        $('.panel-collapse:not(".in")').collapse("show");
+        $("#btnGuardarDatos").on("click",function(){FullMsg.Confirm("¿Seguro de grabar los datos personales?",function(a){a&&$("#frmDatosPrincipal").submit()})});
+        $("#btnGuardarDomicilio").on("click",function(){FullMsg.Confirm("¿Seguro de grabar el domicilio completo?",function(a){a&&$("#frmDireccion").submit()})});
+        $("#btnAgregarMedio").on("click", function () { fnMediosContacto($("#Id_Persona").val(), 0) })
+
+        if ("@Session["vDocumento"].ToString()" != "")
+        {
+            FullMsg.Alert("No se encontro a este cliente")
+            $("#Id_Tipo_Documento").val(@Session["vDocumento"].ToString());
+            $("#Nro_Documento").val(@Session["vNumero"].ToString());
+        }
+    })
+    function fnMediosContacto(a, b) { $.get(FullPathSrv + "Cliente/Medios", { vId_Persona: a, vId: b }, function (data) { modal = FullMsg.Modal({ title: "Nuevo Medio de Contacto", message: data, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { $("#frmEditarMedio").submit(); return !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }], }); modal.modal("show") }) }
+    function fnEliminarMedio(a) { FullMsg.Confirm("¿Seguro de Eliminar el medio?", function (e) { if (e) { $.get(FullPathSrv + "Cliente/Eliminae_Medio", { vId: a }, function (data) { $("#frmMedioContacto").submit() }) } }) }
+    function fnImprimir() {
+        if ($("#frmDatosPrincipal").find("#Id_Persona").val() == "0")
+        {
+            FullMsg.Alert("No registro ningun información")
+        }
+        else
+        {
+            fnWindowPopup(FullPathSrv + "Reportes/ImprimirFicha?vId=" + $("#frmDatosPrincipal").find("#Id_Persona").val(), "Fullsito", "800", "620")
+        }
+    };
+    function fnLimpiar() { document.location = FullPathSrv + "Cliente/Registrar"};
+</script>
+
+@Html.Hidden("#ID_UBIGEO", "")
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Datos Principales
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            @using (Ajax.BeginForm("Registrar", "Cliente", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmDatosPrincipal" }))
+            {
+                <div class="panel-body">
+                    <div id="divDatos">
+                        @Html.Partial("_DatosPrincipales", Model.Persona)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-primary" id="btnGuardarDatos">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Dirección
+                </a>
+            </h3>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("Direccion", "Cliente", new AjaxOptions { UpdateTargetId = "divDireccion", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmDireccion" }))
+            {
+                <div class="panel-body">
+                    <div id="divDireccion">
+                        @Html.Partial("_Direccion", Model.Domicilio)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-primary" id="btnGuardarDomicilio" >Guardar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Medios de Contacto
+                </a>
+            </h3>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaMedios", "Cliente", new AjaxOptions { UpdateTargetId = "divMedios", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmMedioContacto" }))
+            {
+                <div class="panel-body">
+                    @Html.Hidden("vId_Persona", Model.Persona.Id_Persona)
+                    <div id="divMedios">
+                        @Html.Partial("_ListaMedios", Model.Medios)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarMedio" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Estudio Principal
+                </a>
+            </h3>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse in">
+            @using (Ajax.BeginForm("Estudio", "Cliente", new AjaxOptions { UpdateTargetId = "divEstuddio", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEstuddio" }))
+            {
+                <div id="divEstuddio" class="panel-body">
+                    @Html.Partial("_Estudio", Model.Estudio)
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6 text-right">
+                    <button type="button" id="btnFicha" class="btn btn-primary" onclick="fnImprimir()">Imprimir Ficha</button>
+                    <button type="button" id="btnLimpiar" class="btn btn-default" onclick="fnLimpiar()">Limpiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

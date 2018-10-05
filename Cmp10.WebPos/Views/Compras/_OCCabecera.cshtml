@@ -1,0 +1,119 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+<script>
+    $(document).ready(function ()
+    {
+        $("#btnFecha").click(function () { $("#Fecha").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha").datepicker("show") });
+
+        $("#Fecha").val("@Variables.Hoy.ToString("dd/MM/yyyy")");
+
+        $("#btnIdProveedor").click(function ()
+        {
+            $.get(FullPathSrv + "Proveedor/Buscar", function (a)
+            {
+                    modal = FullMsg.Modal({
+                        title: "Buscar Proveedor", message: a, buttons:
+                            [
+                                { label: "Aceptar", className: "btn-primary", callback: function () { modal.modal("hide"), !1 } },
+                                { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }
+                            ]
+                    }), modal.modal("show")
+                })
+        })
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Tipo" class="control-label col-md-3 input-sm">Tipo:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Tipo", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION", 1), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroOrdenCompra" class="control-label col-md-3 input-sm">Nro O/C:</label>
+            <div class="col-md-9">
+                @Html.TextBox("NroOrdenCompra", (string)ViewBag.NroGuia, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="IdProveedor" class="control-label col-md-3 input-sm">Id Proveedor:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("IdProveedor", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "25", @readonly = "readonly" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnIdProveedor" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Proveedor" class="control-label col-md-3 input-sm">Proveedor:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Proveedor", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Moneda" class="control-label col-md-3 input-sm">Moneda:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Moneda", new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "VALOR1", "DESCRIPCION", "NUEVO SOL      "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha" class="control-label col-md-3 input-sm">Fecha:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("Fecha", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFecha" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Responsable" class="control-label col-md-1 input-sm" style="width:12.3%;">Responsable:</label>
+            <div class="col-md-8" style="width:87.7%;">
+                @Html.DropDownList("Responsable", new SelectList((List<Tb_Maestras>)ViewBag.LstResponsable, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="PlanImpCompras" class="control-label col-md-3 input-sm">Plan Imp. Compras:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("PlanImpCompras", new SelectList((List<Tb_Maestras>)ViewBag.LstPlanImpuesto, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+<br />

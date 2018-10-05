@@ -1,0 +1,86 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Comprobantedetalle>
+
+<script>
+    $(document).ready(function ()
+    {
+
+        parseInt($("#frmCabecera").find("#Id_Comprobante").val()) > 0 &&
+        (
+            Felpita(),
+            //$("#vId").val($("#frmCabecera").find("#Id_Comprobante").val()), 0 == $("#btnImprimir").length && 0 == $("#btnProcesar").length && $("#DivBotonera").append('<button type="button" id="btnImprimir" class="btn btn-info btn-sm">Imprimir</button> <button type="button" id="btnProcesar" class="btn btn-info btn-sm" onclick="fnProcesar()">Procesar</button>')
+            $("#vId").val($("#frmCabecera").find("#Id_Comprobante").val()),
+            0 == $("#btnProcesar").length && $("#DivBotonera").append('<button type="button" id="btnProcesar" class="btn btn-info btn-sm" onclick="fnProcesar()">Procesar</button>')
+        )
+
+        $("input[name='Descuento']").blur(function ()
+        {
+            var x = this.value;
+            var y = $(this).attr("dataFull");
+            $.getJSON(FullPathSrv + "Comprobante/ActualizarDescuento?vId=" + y + "&vDescuento=" + x, function (data)
+            {
+                if (data)
+                {
+                    $("#frmDetalle").submit();
+                }
+                else
+                {
+                    FullMsg.Alert("Ocurrio un error, no se realizaron ningun cambio");
+                }
+            });
+        });
+
+    });
+</script>
+
+@if (Model != null && Model.Any())
+{
+@Html.Hidden("vId", Model.ElementAt(0).Id_Comprobante)
+}
+else
+{
+@Html.Hidden("vId", "0")    
+}
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Código</th>
+            <th class="col-lg-7 text-center">Descripción</th>
+            <th class="col-lg-1 text-center">Cantidad</th>
+            <th class="col-lg-1 text-center">Precio</th>
+            <th class="col-lg-1 text-center">Descuento</th>
+            <th class="col-lg-1 text-center">Importe</th>
+            <th class="text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody id="tblFacDEt">
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td>@item.Codigo_Servicio</td>
+                    <td>@item.Descripcion</td>
+                    <td class="text-right">@item.Cantidad.ToString("0.00")</td>
+                    <td class="text-right">@item.Precio.ToString("0.00")</td>
+                    <td class="text-right" style="padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 0px; ">
+                        @Html.TextBox("Descuento", item.Descuento, new { @type = "number", @class = "form-control input-sm text-uppercase", @dataFull=item.Id_Detalle })
+                    </td>
+                    <td class="text-right">@item.Monto.ToString("0.00")</td>
+                    <td align="center">
+                        <button class="btn btn-danger btn-xs" title="Eliminar Servicio" onclick="fnEliminarServicio('@item.Id_Detalle');"><span class="glyphicon glyphicon-trash"></span>&nbsp</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

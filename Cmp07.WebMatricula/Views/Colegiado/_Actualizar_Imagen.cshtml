@@ -1,0 +1,32 @@
+﻿@model Cmp02.Entities.Tb_Persona_Imagen
+<script src="~/Scripts/Core/FullFile.min.js"></script>
+<script>
+    $(document).ready(function () { $("#DivImagenModal").append("<img style='height:200px; width:150px; object-fit:contain' src='" + "@Url.Action("Obtener_Imagen", "Cliente", new { vId=Model.Id_Persona })" + "' alt=''>"); });
+</script>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="file-preview">
+                <label class="control-label input-sm">Fotografía Actual</label>
+                <div class="file-preview-frame" id="DivImagenModal">
+                </div>
+                <div class="clearfix"></div>
+
+            </div>
+        </div>
+
+        <div class="col-md-8" style="padding-right: 30px;">
+            <div class="file-preview">
+                <label class="control-label input-sm">Fotografía Nueva</label>
+                <form action="Actualizar_Imagen" enctype="multipart/form-data" method="post" id="Frm01">
+                    @Html.HiddenFor(x => x.Id_Persona)
+                    @Html.HiddenFor(x => x.Id_Tipo_Imagen)
+                    <div class="form-group">
+                        <input id="files" type="file" class="file" name="files" multiple="true" data-preview-file-type="any">
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

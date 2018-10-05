@@ -1,0 +1,20 @@
+﻿@using Cmp02.Entities;
+@model Tb_Medio_Contacto
+
+@using (Ajax.BeginForm("Medios", "CarnetPermisoExtra", new AjaxOptions { UpdateTargetId = "divMedioContacto", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarMedio" }))
+{
+    <div id="divMedioContacto">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                $("#vId_Persona").val("@Model.Id_Persona");
+                modal.modal("hide");
+                $("#frmMedioContacto").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarMedio2", Model)   
+        }
+    </div>
+}

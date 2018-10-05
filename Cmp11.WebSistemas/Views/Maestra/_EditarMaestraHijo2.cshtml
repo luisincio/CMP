@@ -1,0 +1,52 @@
+﻿@model Cmp02.Entities.Tb_Maestras
+
+<script>
+    $(document).ready(function ()
+    {
+        if ("@Model.Opcional" == "OK")
+        {
+            modal.modal("hide");
+            $("#frmDetalle").submit();
+        }
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Maestra" class="control-label col-md-2 input-sm" style="width:16.1%!important">Nombre Maestra:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control input-sm text-uppercase", @maxlength = "250" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Valor1" class="control-label col-md-2 input-sm" style="width:16.1%!important">Valor Uno:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Valor1, new { @class = "form-control input-sm text-uppercase", @maxlength = "250" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Valor2" class="control-label col-md-2 input-sm" style="width:16.1%!important">Valor Dos:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Valor2, new { @class = "form-control input-sm text-uppercase", @maxlength = "250" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Valor3" class="control-label col-md-2 input-sm" style="width:16.1%!important">Valor Tres:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Valor3, new { @class = "form-control input-sm text-uppercase", @maxlength = "250" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id_Detalle)
+@Html.HiddenFor(m => m.Id_Maestras)
+@Html.HiddenFor(m => m.Id_General)
+@Html.HiddenFor(m => m.Opcional)

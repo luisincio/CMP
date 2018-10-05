@@ -1,0 +1,48 @@
+﻿@using Cmp02.Entities;
+@model Cmp02.Entities.Tb_Usuario
+<script>
+    function fnGuardarPerfil() { FullMsg.Confirm("¿Desea Asignar el Perfil?", function (a) { a && $.get(FullPathSrv + "Usuario/GuardarPerfil", { vId: $("#Id_Usuario").val(), vIdPerfil: $("#vPerfil").val() }, function (a) { "OK" == a ? (FullMsg.Alert("Se Asigno el Perfil Satisfactoriamente"), modal.modal("hide")) : FullMsg.Alert("Error al asignar perfil") }) }) }
+</script>
+
+    <div id="divUsuario">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Nro_Documento" class="control-label col-md-4 input-sm">Número de DNI:</label>
+                    <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Nro_Documento, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Nombre_Completo" class="control-label col-md-4 input-sm">Nombre Completo:</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.Nombre_Completo, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Nombre_Completo" class="control-label col-md-4 input-sm">Usuario:</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Nro_Documento" class="control-label col-md-4 input-sm">Perfil:</label>
+                    <div class="col-md-8">
+                        @Html.DropDownList("vPerfil", new SelectList((List<Tb_Perfil>)ViewBag.LstPerfil, "ID_PERFIL", "PERFIL",Model.Id_Perfil), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.Id_Usuario)
+        @Html.HiddenFor(m => m.Opcional)
+    </div>

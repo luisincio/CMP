@@ -1,0 +1,41 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Servicios>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Item</th>
+            <th class="col-lg-1 text-center">Código</th>
+            <th class="col-lg-6 text-center">Descripción</th>
+            <th class="col-lg-1 text-center">Precio</th>
+            <th class="col-lg-2 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Id_Servicio</td>
+                    <td>@item.Descripcion</td>
+                    <td class="col-lg-1 text-right">@item.Precio</td>
+                    <td align="center">
+                        <button class="btn btn-info btn-xs" title="Editar Usuario" onclick="fnEditar('@item.Id_Servicio');"><span class="glyphicon glyphicon-edit"></span>&nbsp</button>
+                        <button class="btn btn-danger btn-xs" title="Eliminar Usuario" onclick="fnEliminar('@item.Id_Servicio');"><span class="glyphicon glyphicon-trash"></span>&nbsp</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

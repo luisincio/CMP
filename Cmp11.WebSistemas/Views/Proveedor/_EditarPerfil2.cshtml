@@ -1,0 +1,96 @@
+﻿@model Cmp02.Entities.Proveedores
+
+<script>
+    $(document).ready(function ()
+    {
+        if ("@Model.Opcional" == "OK")
+        {
+            modal.modal("hide");
+            $("#frmPerfil").submit();
+        }
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="TipoDocumento" class="control-label col-md-2 input-sm" style="width:16.1%!important">Tipo de Documento:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.TipoDocumento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="NroDocumento" class="control-label col-md-2 input-sm" style="width:16.1%!important">Nro. de Documento:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.NroDocumento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="NroDocumento" class="control-label col-md-2 input-sm" style="width:16.1%!important">Razón Social:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.RazonSocial, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="ApellidoPaterno" class="control-label col-md-2 input-sm" style="width:16.1%!important">Apellido Paterno:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="ApellidoMaterno" class="control-label col-md-2 input-sm" style="width:16.1%!important">Apellido Materno:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="PrimerNombre" class="control-label col-md-2 input-sm" style="width:16.1%!important">Primer Nombre:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.PrimerNombre, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="SegundoNombre" class="control-label col-md-2 input-sm" style="width:16.1%!important">Segundo Nombre:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.SegundoNombre, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="SegundoNombre" class="control-label col-md-2 input-sm" style="width:16.1%!important">Segundo Nombre:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.SegundoNombre, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id_Perfil)
+@Html.HiddenFor(m => m.Opcional)

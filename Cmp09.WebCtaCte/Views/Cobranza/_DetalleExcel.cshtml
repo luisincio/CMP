@@ -1,0 +1,164 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Temporal_Planilla>
+
+<script>
+    $(document).ready(function ()
+    {
+        $('input[name="Importe"]').on("blur", function()
+        {
+            if ($(this).val().length == 0)
+            {
+                $(this).val("0.00");
+            }
+            else if ($(this).val() != "")
+            {
+                $(this).val(parseFloat($(this).val()).toFixed(2));
+            }
+        })
+
+        $("#btn1, #btn2, #btn3, #btn4").on("click", function ()
+        {
+            var vList = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+            if ($("#FullTbl tbody tr").length == vList.length)
+            {
+                $("#Pagina").val($(this).val());
+
+                for (var i = 0; i < vList.length; i++)
+                {
+                    vList[i].Importe = $("#FullTbl tbody tr").eq(i).find("input").val();
+                    vList[i].Flg_Activo = $("#FullTbl tbody tr").eq(i).find("input:checked").val();
+                    //alert(vList[i].Importe);
+                }
+
+
+                $.post({
+                    url: FullPathSrv + "Cobranza/Planilla_Refresh",
+                    data: {vList: vList},
+                    success: function (a, textStatus, jqXHR)
+                    {
+                        //"1" == a ? $("#frmPlanilla").submit() : FullMsg.Alert("Ocurrio un error al procesar " + a)
+                        $("#frmPlanilla").submit();
+                    }
+                });
+
+
+                //alert($("#Pagina").val());
+                //$("#frmPlanilla").submit();
+            }
+            else
+            {
+                FullMsg.Alert("Ocurrio un error en la tabla, no coinciden las cantidades")
+            }
+        })
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            <label for="Monto_Total" class="control-label col-md-2 input-sm">Monto Total:</label>
+            <div class="col-md-5">
+                <div class="input-group">
+                    @if (Model != null && Model.Any())
+                    {
+                        @Html.TextBox("Monto_Total", Model.ElementAt(0).Monto_Total, new { @class = "form-control input-sm text-uppercase", @maxlength = "20", @Readonly = "readonly", @style = "color:red; text-align:right" })
+                    }
+                    else
+                    {
+                        @Html.TextBox("Monto_Total", "0.00", new { @class = "form-control input-sm text-uppercase", @maxlength = "20", @Readonly = "readonly", @style = "color:red; text-align:right" })
+                    }
+                </div>
+            </div>
+            <div class="col-md-5">
+                @Html.Hidden("vIdConsejo", "")
+                @Html.Hidden("vIdEntidad", "")
+                @Html.Hidden("vDocumento", "")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-right">
+        <div class="form-group text-right">
+            @if (Model != null && Model.Any())
+            {
+                <label id="lblUbicacion" class="control-label col-md-7 input-sm" style="padding-left: 0px; padding-right: 0px;">Registros: @((Model.ElementAt(0).Pagina * Variables.Paginacion - Variables.Paginacion) + 1) - @((Model.ElementAt(0).Pagina * Variables.Paginacion - Variables.Paginacion) + Model.Count()) de @Model.ElementAt(0).Total_Reg</label>
+                <div class="col-md-5 text-right" style="padding-left: 0px!important; padding-right: 0px;">
+                    <div class="input-group" style="float:right!important;">
+                        <button type="button" id="btn1" value="1" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Primero"> <span class="glyphicon glyphicon-menu-down"></span></button>
+                        <button type="button" id="btn2" value="@(Model.ElementAt(0).Pagina - 1)" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Anterior"> <span class="glyphicon glyphicon-menu-left"></span></button>
+                        <button type="button" id="btn3" value="@(Model.ElementAt(0).Pagina + 1)" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Siguiente"> <span class="glyphicon glyphicon-menu-right"></span></button>
+                        <button type="button" id="btn4" value="@(Model.ElementAt(0).Total_Pag )" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Último"> <span class="glyphicon glyphicon-menu-up"></span></button>
+                        @*<button type="submit" id="btn1" name="Pagina" value="1" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Primero"> <span class="glyphicon glyphicon-menu-down"></span></button>
+                            <button type="submit" id="btn2" name="Pagina" value="@(Model.ElementAt(0).Pagina - 1)" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Anterior"> <span class="glyphicon glyphicon-menu-left"></span></button>
+                            <button type="submit" id="btn3" name="Pagina" value="@(Model.ElementAt(0).Pagina + 1)" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Siguiente"> <span class="glyphicon glyphicon-menu-right"></span></button>
+                            <button type="submit" id="btn4" name="Pagina" value="@(Model.ElementAt(0).Total_Pag )" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Último"> <span class="glyphicon glyphicon-menu-up"></span></button>*@
+                    </div>
+                </div>
+            }
+            else
+            {
+                <label id="lblUbicacion" class="control-label col-md-7 input-sm" style="padding-left: 0px; padding-right: 0px;">Registros: 0 - 0 de 0 </label>
+                <div class="col-md-5 text-right" style="padding-left: 0px!important; padding-right: 0px;">
+                    <div class="input-group" style="float: right !important;">
+                        <button type="button" name="Pagina" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Primero"> <span class="glyphicon glyphicon-menu-down"></span></button>
+                        <button type="button" name="Pagina" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Anterior"> <span class="glyphicon glyphicon-menu-left"></span></button>
+                        <button type="button" name="Pagina" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Siguiente"> <span class="glyphicon glyphicon-menu-right"></span></button>
+                        <button type="button" name="Pagina" class="btn btn-default btn-xs" style="padding-top: 3px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px;" title="Último"> <span class="glyphicon glyphicon-menu-up"></span></button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<table id="FullTbl" class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-2 text-center">Id Seguro</th>
+            <th hidden="hidden">Id Consejo</th>
+            <th hidden="hidden">Id Entidad</th>
+            <th class="col-lg-1 text-center">Colegiado</th>
+            <th class="col-lg-1 text-center">DNI</th>
+            <th class="col-lg-4 text-center">Nombre Completo</th>
+            <th class="col-lg-1 text-center">Movimiento</th>
+            <th class="col-lg-1 text-center">Periodo</th>
+            <th class="col-lg-1 text-center">Importe</th>
+            <th class="col-lg-0 text-center">Quitar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@((Model.ElementAt(0).Pagina * Variables.Paginacion - Variables.Paginacion) + Count)</td>
+                    <td>@item.Id_Seguro</td>
+                    <td hidden="hidden">@item.Id_Consejo</td>
+                    <td hidden="hidden">@item.Id_EntidadPagadora</td>
+                    <td>@item.Id_Colegiado</td>
+                    <td>@item.Dni</td>
+                    <td>@item.Nombre_Completo</td>
+                    <td>@item.Movimiento</td>
+                    <td>@item.Periodo</td>
+                    <td>
+                        @Html.TextBox("Importe", item.Importe, new { type = "number", @class = "form-control input-sm text-right next" })
+                    </td>
+                    <td align="center">
+                        @Html.CheckBox("Flg_Activo", false)
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

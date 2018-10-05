@@ -1,0 +1,93 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+<script>
+    $(document).ready(function ()
+    {
+        $("#btnFechaTransaccion").click(function () { $("#FechaTransaccion").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#FechaTransaccion").datepicker("show") });
+
+        $("#FechaTransaccion").val("@Variables.Hoy.ToString("dd/MM/yyyy")");
+
+        $("#btnDocumentoOrigen").click(function () {
+            $.get(FullPathSrv + "Compras/BuscarDocOrigen", function (a) {
+                modal = FullMsg.Modal({
+                    title: "Buscar Documento de Origen", message: a, buttons:
+                        [
+                            { label: "Aceptar", className: "btn-primary", callback: function () { (Aceptar(), modal.modal("hide")), !1 } },
+                            { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }
+                        ]
+                }), modal.modal("show")
+            })
+        });
+
+    })
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="EntradaDiario" class="control-label col-md-4 input-sm">Entrada de Diario:</label>
+            <div class="col-md-8">
+                @Html.TextBox("EntradaDiario", (string)ViewBag.NroDiario, new { @class = "form-control input-sm text-uppercase", @maxlength = "20", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Lote" class="control-label col-md-4 input-sm">Lote:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Lote", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="FechaTransaccion" class="control-label col-md-4 input-sm">Fecha Transacciones:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("FechaTransaccion", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaTransaccion" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Moneda" class="control-label col-md-4 input-sm">Moneda:</label>
+            <div class="col-md-8">
+                @Html.DropDownList("Moneda", new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "VALOR1", "DESCRIPCION", "NUEVO SOL      "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DocumentoOrigen" class="control-label col-md-4 input-sm">Documento de Origen:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("DocumentoOrigen", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "25" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnDocumentoOrigen" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Referencia" class="control-label col-md-4 input-sm">Referencia:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Referencia", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "500" })
+            </div>
+        </div>
+    </div>
+</div>

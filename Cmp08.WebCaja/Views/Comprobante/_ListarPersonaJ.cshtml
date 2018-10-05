@@ -1,0 +1,40 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<ColegiadoMin>
+<script>
+    function Buscar() { 2 < $("#vValor").val().trim().length && $("#btnBuscar").submit() }
+</script>
+
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar_Empresa", "Comprobante", new AjaxOptions { UpdateTargetId = "divModal", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmModal" }))
+    {
+        <div class="panel panel-default">
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="vValor" class="control-label col-md-3 input-sm">Buscar por Razon Social o RUC:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese Razon Social o número de Ruc", @maxlength = "100" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnBuscar" onclick="Buscar()"  class="btn btn-primary btn-sm">Buscar</button>
+                                            <button type="button" id="btnAgregarCliente" class="btn btn-info btn-sm" onclick="Felpa2()">Agregar</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divModal" class="panel-body" style="max-height:360px; padding: 0px; overflow-y: scroll;">
+                    @Html.Partial("_ListarPersonaJDetalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

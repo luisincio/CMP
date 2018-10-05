@@ -1,0 +1,136 @@
+﻿@using Cmp02.Entities
+@model Cmp02.Entities.Proveedores
+<script>
+    $(document).ready(function ()
+    {
+        $("#TipoPersona, #TipoDocumento").val(6);
+    })
+    
+</script>
+
+<div class="row">
+    @*<div class="col-md-6">
+        <div class="form-group">
+            <label for="IdProveedor" class="control-label col-md-4 input-sm">Id Proveedor:</label>
+            <div class="col-md-8">
+                @Html.TextBox("IdProveedor", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>*@
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DescripcionGenerica" class="control-label col-md-4 input-sm">Tipo Persona:</label>
+            <div class="col-md-8">
+                @Html.DropDownList("TipoPersona", new SelectList((List<Tb_Maestras>)ViewBag.LstTipoPersona, "ID_MAESTRAS", "DESCRIPCION", 6), new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>  
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="OpcionImptoVentas" class="control-label col-md-4 input-sm">Tipo Documento:</label>
+            <div class="col-md-8">
+                @Html.DropDownList("TipoDocumento", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION", 6), new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroDocumento" class="control-label col-md-4 input-sm">Nro. de Documento:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(x => x.NroDocumento, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="RazonSocial" class="control-label col-md-2 input-sm" style="width:16.1%;">Razón Social:</label>
+            <div class="col-md-10" style="width:83.9%;">
+                @Html.TextBox("RazonSocial", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="TipoArticulo" class="control-label col-md-4 input-sm">Primer Nonbre:</label>
+            <div class="col-md-8">
+                @Html.TextBox("PrimerNombre", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="MetodoValuacion" class="control-label col-md-4 input-sm">Segundo Nombre:</label>
+            <div class="col-md-8">
+                @Html.TextBox("SegundoNombre", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="OpcionImptoVentas" class="control-label col-md-4 input-sm">Apellido Paterno:</label>
+            <div class="col-md-8">
+                @Html.TextBox("ApellidoPaterno", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="OpcionImptoCompras" class="control-label col-md-4 input-sm">Apellido Materno:</label>
+            <div class="col-md-8">
+                @Html.TextBox("ApellidoMaterno", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<label for="PlanImpuestosI" class="control-label input-sm">DIRECCIÓN PRINCIPAL</label>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="RazonSocial" class="control-label col-md-2 input-sm" style="width:16.1%;">Dirección:</label>
+            <div class="col-md-10" style="width:83.9%;">
+                @Html.TextBox("Direccion", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Plan_U_M" class="control-label col-md-4 input-sm">Departamento:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Departamento", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CostoEstandar" class="control-label col-md-4 input-sm">Provincia:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Provincia", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Plan_U_M" class="control-label col-md-4 input-sm">Distrito:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Distrito", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Opcional)

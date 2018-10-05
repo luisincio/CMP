@@ -1,0 +1,472 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Transacciones
+
+<script>
+    $(document).ready(function ()
+    {
+        $(document).on("keydown", ".FullInt", function (a) { $.inArray(a.keyCode, [8, 9, 27, 13]) !== -1 || 65 == a.keyCode && a.ctrlKey === !0 || a.keyCode >= 35 && a.keyCode <= 47 || (a.shiftKey || a.keyCode < 48 || a.keyCode > 57) && (a.keyCode < 96 || a.keyCode > 105) && a.preventDefault() });
+        $("#btnFecha").click(function () { $("#Fecha").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha").datepicker("show") });
+        @*$("#btnFechaRef").click(function () { $("#FechaDocRef").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#FechaDocRef").datepicker("show") });*@
+        @*if ("@Model.Fecha_Nacio.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha").val("@Variables.Hoy.ToString("dd/MM/yyyy")") }*@
+        $("#Fecha, #FechaDocRef").val("@Variables.Hoy.ToString("dd/MM/yyyy")");
+
+
+        $("#btnIdProveedor").click(function ()
+        {
+            $.get(FullPathSrv + "Proveedor/Buscar", function (a) {
+                modal = FullMsg.Modal({
+                    title: "Buscar Proveedor", message: a, buttons:
+                        [
+                            { label: "Aceptar", className: "btn-primary", callback: function () { fnload_Address(), modal.modal("hide"), !1 } },
+                            { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }
+                        ]
+                }), modal.modal("show")
+            })
+        })
+
+        $("#Detraccion").change(function ()
+        {
+            $("#Porcentaje").val(parseFloat($("option:selected", this).attr("data-porcent")).toFixed(2).toString());
+            $("#MontoDetraccion").val( (parseFloat($("#Porcentaje").val()) * parseFloat($("#Total").val()) / 100).toFixed(2));
+        });
+
+        $("#PlanImpCompras").change(function ()
+        {
+            $("#Compras, #Comercial, #Flete, #Miscelaneos").attr("readonly", true);
+            $("#Compras, #Comercial, #Flete, #Miscelaneos, #Total, #Impuesto").val("0.00")
+            if ($(this).val() != "")
+            {
+                $("#Compras, #Comercial, #Flete, #Miscelaneos").attr("readonly", false);
+                $("#Compras, #Comercial, #Flete, #Miscelaneos").val("")
+            }
+        })
+
+        $("#Compras, #Comercial, #Flete, #Miscelaneos").on("blur", function ()
+        {
+            var Compras, Comercial, Flete, Miscelaneos, IGV = 0;
+
+            if ($(this).val() != "")
+            {
+                $(this).val(parseFloat($(this).val()).toFixed(2));
+
+                Compras = ($("#Compras").val().toString().length == 0) ? 0 : parseFloat($("#Compras").val());
+                Comercial = ($("#Comercial").val().toString().length == 0) ? 0 : parseFloat($("#Comercial").val());
+                Flete = ($("#Flete").val().toString().length == 0) ? 0 : parseFloat($("#Flete").val());
+                Miscelaneos = ($("#Miscelaneos").val().toString().length == 0) ? 0 : parseFloat($("#Miscelaneos").val());
+
+                if ($("#PlanImpCompras").val() == "COMPRAS        " || $("#PlanImpCompras").val() == "PRO-IGV        ")
+                {
+                    IGV = (Compras - Comercial) * 0.18;
+                }
+                else
+                {
+                    IGV = 0;
+                }
+                $("#Impuesto").val(IGV.toFixed(2));
+                $("#Total, #SaldoCuenta").val(((Compras - Comercial) + Flete + Miscelaneos + IGV).toFixed(2));
+            }
+        })
+
+        $("#PlanImpCompras").change();
+    })
+
+    function fnload_Address()
+    {
+        $.getJSON(FullPathSrv + "Pagos/Listar_Ordenes?vProveedor=" + $("#IdProveedor").val(), function (data) {
+            $.each(data, function (id, value) {
+                $("#Orden").append('<option value="' + value.Valor1 + '">' + value.Descripcion + '</option>');
+            });
+        });
+    }
+</script>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroComprobante" class="control-label col-md-3 input-sm">Nro. Comprobante:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @*@Html.TextBox("NroComprobante", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "11" })*@
+                    @Html.TextBox("NroComprobante", (string)ViewBag.NroGuia, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarComprobantes" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Lote" class="control-label col-md-3 input-sm">Lote:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Lote", (string)ViewBag.Lote, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                @*@Html.DropDownList("Lote", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Tipo" class="control-label col-md-3 input-sm">Tipo Documento:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Tipo", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha" class="control-label col-md-3 input-sm">Fecha Doc.:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("Fecha", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFecha" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-3 input-sm">Descripción:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Descripcion", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="AfectoRC" class="control-label col-md-11 input-sm text-right">No Afecta al Registro de Compras:</label>
+            <div class="col-md-1">
+                @Html.CheckBox("AfectoRC", false)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Proveedor" class="control-label col-md-3 input-sm">Id Proveedor:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("IdProveedor", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "11" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnIdProveedor" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Proveedor" class="control-label col-md-3 input-sm">Proveedor:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Proveedor", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Direccion" class="control-label col-md-3 input-sm">Dirección:</label>
+            <div class="col-md-9">
+                @*@Html.DropDownList("Direccion", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })*@
+                @*<select id="Orden" name="Orden" class="form-control input-sm text-uppercase">
+                    <option value="">SELECCIONE</option>
+                </select>*@
+                @Html.TextBox("Direccion", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<div class="form-group">
+            <label for="Remitir" class="control-label col-md-3 input-sm">Remitir a:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Remitir", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>*@
+        <div class="form-group">
+            <label for="ConceptoGasto" class="control-label col-md-3 input-sm">Concepto Gastos:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("ConceptoGasto", new SelectList((List<Tb_Maestras>)ViewBag.LstConceptoGastos, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CondicionPago" class="control-label col-md-3 input-sm">Condición Pago:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("CondicionPago", new SelectList((List<Tb_Maestras>)ViewBag.LstCondicionPago, "VALOR1", "DESCRIPCION", "CONTADO              "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Moneda" class="control-label col-md-3 input-sm">Moneda:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Moneda", new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "VALOR1", "DESCRIPCION", "NUEVO SOL      "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="TipoDocSunat" class="control-label col-md-3 input-sm">Tipo Doc. Sunat:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("TipoDoc_Sunat", new SelectList((List<Tb_Maestras>)ViewBag.LstSunat, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroDocumentoSunat" class="control-label col-md-3 input-sm">Nro. Documento:</label>
+            <div class="col-md-9">
+                @Html.TextBox("NroDocumentoSunat", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroOrdenCompra" class="control-label col-md-3 input-sm">Nro. O/C:</label>
+            <div class="col-md-9">
+                @Html.TextBox("NroOrdenCompra", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<div class="form-group">
+            <label for="MetodoEnvio" class="control-label col-md-3 input-sm">Método Envío:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("MetodoEnvio", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>*@
+        <div class="form-group">
+            <label for="PlanImpCompras" class="control-label col-md-3 input-sm">Plan Impuesto:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("PlanImpCompras", new SelectList((List<Tb_Maestras>)ViewBag.LstPlanImpuesto, "VALOR1", "DESCRIPCION", "PRO-IGV        "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="row">
+    <div class="col-md-6">
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="PlanImpCompras" class="control-label col-md-3 input-sm">Plan Impuesto:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("PlanImpCompras", new SelectList((List<Tb_Maestras>)ViewBag.LstPlanImpuesto, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>              
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Compras" class="control-label col-md-3 input-sm">Compras:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Compras", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Comercial" class="control-label col-md-3 input-sm">Dto. Comercial:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Comercial", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Flete" class="control-label col-md-3 input-sm">Flete:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Flete", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Miscelaneos" class="control-label col-md-3 input-sm">Misceláneos:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Miscelaneos", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Impuesto" class="control-label col-md-3 input-sm">Impuesto:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Impuesto", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Total" class="control-label col-md-3 input-sm">Total:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Total", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Detraccion" class="control-label col-md-3 input-sm">Detracción:</label>
+            <div class="col-md-9">
+                <select id="Detraccion" name="Detraccion" class="form-control input-sm text-uppercase">
+                    <option value="" data-table="" data-porcent="0.00">SELECCIONE [OMITIR]</option>
+                    @foreach (var item in (List<Tb_Maestras>)ViewBag.LstDetraccion)
+                    {
+                        <option value="@item.Id_Maestras" data-table="@item.Valor1" data-porcent="@item.Valor2">@item.Descripcion</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="Porcentaje" class="control-label col-md-6 input-sm">Porcentaje(%):</label>
+            <div class="col-md-6">
+                @Html.TextBox("Porcentaje", "0.00", new { @class = "form-control input-sm text-uppercase text-right", @maxlength = "250", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="MontoDetraccion" class="control-label col-md-6 input-sm">Monto Detrac.(S/.):</label>
+            <div class="col-md-6">
+                @Html.TextBox("MontoDetraccion", "0.00", new { @class = "form-control input-sm text-uppercase text-right", @maxlength = "250", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Efectivo" class="control-label col-md-3 input-sm">Efectivo:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("Efectivo", "", new { @class = "form-control input-sm text-uppercase" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarEfectivo" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Cheque" class="control-label col-md-3 input-sm">Cheque:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("Cheque", "", new { @class = "form-control input-sm text-uppercase" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarCheque" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@*<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="TarjetaCredito" class="control-label col-md-3 input-sm">Tarjeta Crédito:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("TarjetaCredito", "", new { @class = "form-control input-sm text-uppercase" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarTarjeta" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CondDtoTomados" class="control-label col-md-3 input-sm">Cond. dto. Tomados:</label>
+            <div class="col-md-9">
+                @Html.TextBox("CondDtoTomados", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="SaldoCuenta" class="control-label col-md-3 input-sm">Saldo en Cuenta:</label>
+            <div class="col-md-9">
+                @Html.TextBox("SaldoCuenta", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="AfectoRetencion" class="control-label col-md-11 input-sm text-right">Afecto a Retención:</label>
+        <div class="col-md-1">
+            @Html.CheckBox("AfectoRetencion", false)
+        </div>
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DocReferencia" class="control-label col-md-3 input-sm">Doc. Referencia:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("DocReferencia", "", new { @class = "form-control input-sm text-uppercase" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarEfectivo" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="FechaDocRef" class="control-label col-md-3 input-sm">Fecha Doc. Ref.:</label>
+            <div class="col-md-9">
+                    @Html.TextBox("FechaDocRef", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />

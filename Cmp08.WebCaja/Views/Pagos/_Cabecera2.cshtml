@@ -1,0 +1,373 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model TransaccionesCobros
+
+<script>
+    $(document).ready(function ()
+    {
+        $(document).on("keydown", ".FullInt", function (a) { $.inArray(a.keyCode, [8, 9, 27, 13]) !== -1 || 65 == a.keyCode && a.ctrlKey === !0 || a.keyCode >= 35 && a.keyCode <= 47 || (a.shiftKey || a.keyCode < 48 || a.keyCode > 57) && (a.keyCode < 96 || a.keyCode > 105) && a.preventDefault() });
+        $("#btnFecha").click(function () { $("#Fecha").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha").datepicker("show") });
+        @*$("#btnFechaRef").click(function () { $("#FechaDocRef").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#FechaDocRef").datepicker("show") });*@
+        @*if ("@Model.Fecha_Nacio.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha").val("@Variables.Hoy.ToString("dd/MM/yyyy")") }*@
+        $("#Fecha, #FechaDocRef").val("@Variables.Hoy.ToString("dd/MM/yyyy")");
+
+
+        $("#btnCliente").click(function ()
+        {
+            $.get(FullPathSrv + "Cobranza/BuscarClienteGP", function (a) {
+                modal = FullMsg.Modal({
+                    title: "Buscar Cliente", message: a, buttons:
+                        [
+                            { label: "Aceptar", className: "btn-primary", callback: function () { fnload_Address(), modal.modal("hide"), !1 } },
+                            { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }
+                        ]
+                }), modal.modal("show")
+            })
+        })
+
+        $("#Detraccion").change(function ()
+        {
+            $("#Porcentaje").val(parseFloat($("option:selected", this).attr("data-porcent")).toFixed(2).toString());
+            $("#MontoDetraccion").val( (parseFloat($("#Porcentaje").val()) * parseFloat($("#Total").val()) / 100).toFixed(2));
+        });
+
+        $("#PlanImpCompras").change(function ()
+        {
+            $("#Compras, #Comercial, #Flete, #Miscelaneos").attr("readonly", true);
+            $("#Compras, #Comercial, #Flete, #Miscelaneos, #Total, #Impuesto").val("0.00")
+            if ($(this).val() != "")
+            {
+                $("#Compras, #Comercial, #Flete, #Miscelaneos").attr("readonly", false);
+                $("#Compras, #Comercial, #Flete, #Miscelaneos").val("")
+            }
+        })
+
+        $("#Compras, #Comercial, #Flete, #Miscelaneos").on("blur", function ()
+        {
+            var Compras, Comercial, Flete, Miscelaneos, IGV = 0;
+
+            if ($(this).val() != "")
+            {
+                $(this).val(parseFloat($(this).val()).toFixed(2));
+
+                Compras = ($("#Compras").val().toString().length == 0) ? 0 : parseFloat($("#Compras").val());
+                Comercial = ($("#Comercial").val().toString().length == 0) ? 0 : parseFloat($("#Comercial").val());
+                Flete = ($("#Flete").val().toString().length == 0) ? 0 : parseFloat($("#Flete").val());
+                Miscelaneos = ($("#Miscelaneos").val().toString().length == 0) ? 0 : parseFloat($("#Miscelaneos").val());
+
+                if ($("#PlanImpCompras").val() == "COMPRAS        " || $("#PlanImpCompras").val() == "PRO-IGV        ")
+                {
+                    IGV = (Compras - Comercial) * 0.18;
+                }
+                else
+                {
+                    IGV = 0;
+                }
+                $("#Impuesto").val(IGV.toFixed(2));
+                $("#Total, #SaldoCuenta").val(((Compras - Comercial) + Flete + Miscelaneos + IGV).toFixed(2));
+            }
+        })
+
+        $("#PlanImpCompras").change();
+    })
+
+    function fnload_Address()
+    {
+        var vComodin = $("#FullData").val().indexOf("-")
+        $("#IdCliente").val($("#FullData").val().substring(0, vComodin))
+        $("#Cliente").val($("#FullData").val().substring(vComodin + 1, $("#FullData").val().length))
+
+        $.getJSON(FullPathSrv + "Pagos/Listar_Direcciones?vCliente=" + $("#IdCliente").val(), function (data) {
+            $.each(data, function (id, value) {
+                $("#Direccion").append('<option value="' + value.Valor1 + '">' + value.Descripcion + '</option>');
+            });
+        });
+    }
+    function listarConcepto() {
+        //var vComodin = $("#FullData").val().indexOf("-")
+        //$("#IdCliente").val($("#FullData").val().substring(0, vComodin))
+        //$("#Cliente").val($("#FullData").val().substring(vComodin + 1, $("#FullData").val().length))
+        $("#ConceptoGasto").html("");
+        $.getJSON(FullPathSrv + "Pagos/Listar_Conceptos?vTtipo=" + $("#Tipo").val(), function (data) {
+            $.each(data, function (id, value) {
+                $("#ConceptoGasto").append('<option value="' + value.Id_Maestras + '">' + value.Descripcion + '</option>');
+            });
+        });
+    }
+</script>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroComprobante" class="control-label col-md-3 input-sm">Nro. Comprobante:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("NroComprobante", (string)ViewBag.NroGuia, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarComprobantes" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Lote" class="control-label col-md-3 input-sm">Lote:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Lote", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Tipo" class="control-label col-md-3 input-sm">Tipo Documento:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Tipo", new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase", onchange = "listarConcepto()" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha" class="control-label col-md-3 input-sm">Fecha Doc.:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("Fecha", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFecha" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-3 input-sm">Descripción:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Descripcion", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="AfectoRV" class="control-label col-md-11 input-sm text-right">No Afecta al Registro de Ventas:</label>
+            <div class="col-md-1">
+                @Html.CheckBox("AfectoRV", false)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="IdCliente" class="control-label col-md-3 input-sm">Id del Cliente:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBox("IdCliente", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "11", @readonly = "readonly" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnCliente" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Cliente" class="control-label col-md-3 input-sm">Nombre:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Cliente", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Direccion" class="control-label col-md-3 input-sm">Dirección:</label>
+            <div class="col-md-9">
+                <select id="Direccion" name="Direccion" class="form-control input-sm text-uppercase">
+                    <option value="">SELECCIONE</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Vendedor" class="control-label col-md-3 input-sm">Concepto:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("ConceptoGasto", new SelectList((List<Tb_Maestras>)ViewBag.LstConceptoGastos, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CondicionPago" class="control-label col-md-3 input-sm">Condición Pago:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("CondicionPago", new SelectList((List<Tb_Maestras>)ViewBag.LstCondicionPago, "VALOR1", "DESCRIPCION", "CONTADO              "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Moneda" class="control-label col-md-3 input-sm">Moneda:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Moneda", new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "VALOR1", "DESCRIPCION", "NUEVO SOL      "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="MetodoEnvio" class="control-label col-md-3 input-sm">Método de Envío:</label>
+            <div class="col-md-9">
+                @Html.TextBox("MetodoEnvio", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="PlanImpCompras" class="control-label col-md-3 input-sm">Plan Impuesto:</label>
+            <div class="col-md-9">
+                @Html.DropDownList("PlanImpCompras", new SelectList((List<Tb_Maestras>)ViewBag.LstPlanImpuesto, "VALOR1", "DESCRIPCION", "PRO-IGV        "), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroOrdenCompra" class="control-label col-md-3 input-sm">Nro. O/C:</label>
+            <div class="col-md-9">
+                @Html.TextBox("NroOrdenCompra", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Costo" class="control-label col-md-3 input-sm">Costo:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Costo", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Efectivo" class="control-label col-md-3 input-sm">Efectivo:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Efectivo", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Ventas" class="control-label col-md-3 input-sm">Monto Débito:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Ventas", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Cheque" class="control-label col-md-3 input-sm">Cheque:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Cheque", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DtoComercial" class="control-label col-md-3 input-sm">Dto. Comercial:</label>
+            <div class="col-md-9">
+                @Html.TextBox("DtoComercial", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Tarjeta" class="control-label col-md-3 input-sm">Tarjeta Crédito:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Tarjeta", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Flete" class="control-label col-md-3 input-sm">Flete:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Flete", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DtoDevuelto" class="control-label col-md-3 input-sm">Dto. Tomados:</label>
+            <div class="col-md-9">
+                @Html.TextBox("DtoDevuelto", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Miscelaneos" class="control-label col-md-3 input-sm">Misceláneos:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Miscelaneos", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="SaldoCuenta" class="control-label col-md-3 input-sm">Saldo a Cuenta:</label>
+            <div class="col-md-9">
+                @Html.TextBox("SaldoCuenta", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Impuesto" class="control-label col-md-3 input-sm">Impuesto:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Impuesto", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Total" class="control-label col-md-3 input-sm">Total:</label>
+            <div class="col-md-9">
+                @Html.TextBox("Total", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number" })
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Hidden("FullData", "")
+
+<br />

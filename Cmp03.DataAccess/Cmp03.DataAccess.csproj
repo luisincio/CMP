@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7C277B89-0898-4E1E-9820-9A243AAF810E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cmp03.DataAccess</RootNamespace>
+    <AssemblyName>Cmp03.DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Utildatatool">
+      <HintPath>..\Cmp01.Utilities\01Binaries\Utildatatool.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="01Base\Base.cs" />
+    <Compile Include="02DataDomain\Tb_Cobranza_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Carnet_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Consejo_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Especialidad_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Estado_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Estudio_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Colegiado_Laboral_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Comprobantecabecera_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Comprobantedetalle_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Correlativos_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Domicilio_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Maestras_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Medio_Contacto_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Pais_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Parametro_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Perfilpermiso_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Perfilusuario_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Perfil_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Permiso_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Persona_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Persona_Directivo_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Persona_Imagen_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Persona_Juridica_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Persona_Natural_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Recibocabecera_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Recibodetalle_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Servicios_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Temporal_Planilla_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Ubigeo_AD.cs" />
+    <Compile Include="02DataDomain\Tb_Usuario_AD.cs" />
+    <Compile Include="03ExternalData\Articulos_AD.cs" />
+    <Compile Include="03ExternalData\Chequera_AD.cs" />
+    <Compile Include="03ExternalData\Numeracion_AD.cs" />
+    <Compile Include="03ExternalData\Cliente_AD.cs" />
+    <Compile Include="03ExternalData\Cuentas_Cobrar_AD.cs" />
+    <Compile Include="03ExternalData\Cuentas_Pagar_AD.cs" />
+    <Compile Include="03ExternalData\Cuenta_Gasto_AD.cs" />
+    <Compile Include="03ExternalData\Detraccion_AD.cs" />
+    <Compile Include="03ExternalData\Factura_AD.cs" />
+    <Compile Include="03ExternalData\Orden_Compra_AD.cs" />
+    <Compile Include="03ExternalData\Pagos_Manuales_AD.cs" />
+    <Compile Include="03ExternalData\Proveedor_AD.cs" />
+    <Compile Include="03ExternalData\Recepcion_AD.cs" />
+    <Compile Include="03ExternalData\Transacciones_AD.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cmp01.Utilities\Cmp01.Utilities.csproj">
+      <Project>{4e9ae6be-8868-4fa3-9a8b-1c33ecd317a5}</Project>
+      <Name>Cmp01.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cmp02.Entities\Cmp02.Entities.csproj">
+      <Project>{3840507f-9ad1-4744-9a99-41bccdb088bc}</Project>
+      <Name>Cmp02.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

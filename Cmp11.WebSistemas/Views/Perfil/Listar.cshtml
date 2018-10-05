@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Perfil>
+
+<script>
+    function fnEliminar(a) { FullMsg.Confirm("¿Seguro de eliminar el Perfil?", function (b) { b && $.get(FullPathSrv + "Perfil/Eliminar", { vId: a }, function (a) { $("#frmPerfil").submit() }) }) }
+    function fnEditar(a) { $.get(FullPathSrv + "Perfil/Editar", { vId: a }, function (a) { modal = FullMsg.Modal({ title: "Datos del Perfil", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarPerfil").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) }
+    function fnAsignar(a) { window.location = FullPathSrv + "Permiso/PerfilPermisos?vId_Perfil=" + a }
+    $(document).ready(function () { $("#btnLimpiar").on("click", function () { $("#vValor").val(""), $("#frmPerfil").submit() }), $("#btnAgregar").on("click", function () { fnEditar(0) }) });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Perfil", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmPerfil" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-2 input-sm">Por Nombre Perfil:</label>
+                                <div class="col-md-10">
+                                    @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre de perfil", @maxlength = "50" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                <button type="button" id="btnLimpiar" class="btn btn-default btn-sm">Limpiar</button>
+                                <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

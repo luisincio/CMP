@@ -1,0 +1,18 @@
+﻿@model Cmp02.Entities.Tb_Maestras
+
+@using (Ajax.BeginForm("Editar", "Maestra", new AjaxOptions { UpdateTargetId = "divMaestra", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarMaestra" }))
+{
+    <div id="divMaestra">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmMaestra").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarMaestra2", Model)
+        }
+    </div>
+}

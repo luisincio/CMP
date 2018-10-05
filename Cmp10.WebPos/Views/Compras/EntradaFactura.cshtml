@@ -1,0 +1,202 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Recepcion
+<script>
+    function fnDataCalculate()
+    {
+        var Subtotal = 0, Impuesto = 0, Total = 0;
+        $("#Subtotal").val(Subtotal.toFixed(2).toString());
+        $("#Impuesto").val(Impuesto.toFixed(2).toString());
+        $("#Total").val(Total.toFixed(2).toString());
+
+        $("#FullTbl tbody tr").each(function (index)
+        {
+            if ($(this).find("td").eq(10).html() != null)
+            {
+                Subtotal = Subtotal + parseFloat($(this).find("td").eq(10).html());
+                Impuesto = Impuesto + parseFloat($(this).find("td").eq(12).html());
+                Total = Impuesto + Subtotal;
+                $("#Subtotal").val(Subtotal.toFixed(2).toString());
+                $("#Impuesto").val(Impuesto.toFixed(2).toString());
+                $("#Total").val(Total.toFixed(2).toString());
+            }
+        })
+    }
+
+    $(document).ready(function() 
+    {
+        $("#btnGuardarDatos").on("click", function ()
+        {
+            var Obj = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+            Obj.Cabecera.TipoRecepcion = $("#Tipo").val();
+            Obj.Cabecera.NroRecepcion = $("#Nro_Documento").val();
+            Obj.Cabecera.TipoDocSunat = $("#TipoDoc_Sunat").val();
+            Obj.Cabecera.NroDocumento = $("#Nro_DocumentoProv").val();
+            Obj.Cabecera.FechaRecepcion = $("#Fecha").val();
+            Obj.Cabecera.Lote = $("#Lote").val();
+            Obj.Cabecera.IdProveedor = $("#IdProveedor").val();
+            Obj.Cabecera.NombreProveedor = $("#Proveedor").val();
+            Obj.Cabecera.IdCondicion = $("#CondicionPago").val();
+            Obj.Cabecera.IdMoneda = $("#Moneda").val();
+            Obj.Cabecera.TipoCambio = "0.00";
+
+            var vCount = 0;
+            $("#FullTbl tbody tr").each(function (index)
+            {
+                if ($(this).find("td").eq(5).html() != null)
+                {
+                    vCount = vCount + 1;
+                    Obj.Detalle.push(
+                        {
+                            TipoRecepcion: $("#Tipo").val(),
+                            NroRecepcion: $("#Nro_Documento").val(),
+                            IdProveedor: $("#IdProveedor").val(),
+                            OrdenCompra: $(this).find("td").eq(0).html(),
+                            LineaItemRecepcion: vCount,
+                            LineaItemorden: $(this).find("td").eq(1).html(),
+                            IdProducto: $(this).find("td").eq(2).html(),
+                            DesCripcionItem: $(this).find("td").eq(3).find("input").val(), 
+                            UnidadMedida: $(this).find("td").eq(4).html(),
+                            CodigoAlmacen: $(this).find("td").eq(5).html(),
+                            CantidadEnvio: $(this).find("td").eq(7).find("input").val(), 
+                            CantidadFactura: $(this).find("td").eq(8).html(),
+                            Costo: $(this).find("td").eq(9).html(),
+                            SubTotal: $(this).find("td").eq(10).html(),
+                            IdMoneda: $("#Moneda").val()
+                        });
+                }
+            })
+
+
+            $.ajax({
+                url: FullPathSrv + "Compras/GrabarRecepcion",
+                async: false,
+                type: "POST",
+                data: JSON.stringify(Obj),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+                },
+                success: function (a, textStatus, jqXHR)
+                {
+                    "1" == a ? FullMsg.Alert("Se envío correctamente") : FullMsg.Alert("Ocurrio un error al procesar " + a) 
+                }
+            });
+        });
+    
+    });
+    
+</script>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Entrada Factura Compra
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+                @using (Ajax.BeginForm("Entrada", "Compras", new AjaxOptions { UpdateTargetId = "divCabecera", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmCabecera" }))
+                {
+                    <div id="divCabecera">
+                        @Html.Partial("_EFCabecera")
+                    </div>
+                }
+
+                <button type="button" class="btn btn-primary" id="btnGuardarDatos">Grabar Factura</button>
+
+                <hr />
+                @using (Ajax.BeginForm("Listar_Orden", "Compras", new AjaxOptions { UpdateTargetId = "divDetalle", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmDetalle" }))
+                {
+                    <div class="row">
+                        <div class="col-md-12" id="divDetalle">
+                            @Html.Partial("_EFDetalle", Model.Orden)
+                        </div>
+                    </div>
+                    @Html.Hidden("vOrden", "")
+                }
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="CondicionPago" class="control-label col-md-4 input-sm">Condición Pago:</label>
+                            <div class="col-md-8">
+                                @Html.DropDownList("CondicionPago", new SelectList((List<Tb_Maestras>)ViewBag.LstCondicionPago, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Subtotal" class="control-label col-md-4 input-sm">Subtotal:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Subtotal" name="Subtotal" readonly="readonly" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Dtocomercial" class="control-label col-md-4 input-sm">Dto. comercial:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Dtocomercial" name="Dtocomercial" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Flete" class="control-label col-md-4 input-sm">Flete:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Flete" name="Flete" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Miscelaneos" class="control-label col-md-4 input-sm">Misceláneos:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Miscelaneos" name="Miscelaneos" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Impuesto" class="control-label col-md-4 input-sm">Impuesto:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Impuesto" name="Impuesto" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Prepago" class="control-label col-md-4 input-sm">Prepago:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Prepago" name="Prepago" readonly="readonly" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Total" class="control-label col-md-4 input-sm">Total:</label>
+                            <div class="col-md-8">
+                                <input class="form-control input-sm text-uppercase text-right" id="Total" name="Total" readonly="readonly" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

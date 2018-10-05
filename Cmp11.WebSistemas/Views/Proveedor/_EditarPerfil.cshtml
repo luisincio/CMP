@@ -1,0 +1,19 @@
+﻿
+@model Cmp02.Entities.Proveedores
+
+@using (Ajax.BeginForm("Editar", "Proveedor", new AjaxOptions { UpdateTargetId = "divPerfil", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarPerfil" }))
+{
+    <div id="divPerfil">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmPerfil").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarPerfil2", Model)
+        }
+    </div>
+}

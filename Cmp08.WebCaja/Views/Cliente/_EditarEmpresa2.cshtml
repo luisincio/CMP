@@ -1,0 +1,138 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model ClienteClover
+
+<script>
+    $(document).ready(function () {
+        if ("@Model.Opcional" == "OK")
+        {
+            FullMsg.Alert("Se grabo correctamente")
+            modal2.modal("hide");
+        }
+
+        $("#Id_Sector").change(function () {
+            var a = $("#Id_Grupo"); a.empty(), "" != $("select#Id_Sector").val() && $.ajax({
+                url: FullPathSrv + "Cliente/ListarGrupo", type: "POST", data:
+                    { vSector: $("select#Id_Sector").val() }, success: function (b)
+                    {
+                        $.each(b, function (b, c) { $("<option>", { value: c.id }).html(c.label).appendTo(a) })
+                    }
+            })
+        });
+
+        $("#Direccion2").autocomplete(
+            {
+                source: FullPathSrv + "Cliente/ListarUbigeoPeru", select: function (a, b) { $("#Id_Ubigeo").val(b.item.id) }
+            });
+    })
+
+    function soloNumeros(e) {
+        var key = window.Event ? e.which : e.keyCode
+        return ((key >= 48 && key <= 57) || (key == 8))
+    }
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Documento" class="control-label col-md-4 input-sm">Tipo Documento:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.TipoDocumento, new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION", Model.TipoDocumento), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroDocumento" class="control-label col-md-4 input-sm">Nro. de Documento:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.NroDocumento, new { @class = "form-control input-sm text-uppercase", @maxlength = "11", @onKeyPress = "return soloNumeros(event)" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Sector" class="control-label col-md-4 input-sm">Sector:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Sector, new SelectList((List<Tb_Maestras>)ViewBag.LstSector, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Sector), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Grupo" class="control-label col-md-4 input-sm">Grupo:</label>
+            <div class="col-md-8">
+                <select id="Id_Grupo" name="Id_Grupo" class="form-control input-sm text-uppercase">
+                    <option>SELECCIONE</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Clase" class="control-label col-md-4 input-sm">Tipo de Clase:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Clase, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="PrimerNombre" class="control-label col-md-2 input-sm">Razon Social:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PrimerNombre, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Direccion1" class="control-label col-md-2 input-sm">Dirección:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Direccion1, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Direccion2" class="control-label col-md-2 input-sm">Ubigeo/ Distrito:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Direccion2, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Celular" class="control-label col-md-4 input-sm">Celular:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control input-sm text-uppercase", maxlength = "9", @onKeyPress = "return soloNumeros(event)" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Email" class="control-label col-md-4 input-sm">Email:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control input-sm text-uppercase", maxlength = "60" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Pais)
+@Html.HiddenFor(m => m.NombreCompleto)
+@Html.HiddenFor(m => m.FormaPago)
+@Html.HiddenFor(m => m.TipoPersona)
+@Html.HiddenFor(m => m.Id_Ubigeo)
+@*@Html.Hidden("vId_Persona", Model.Id_Persona)*@

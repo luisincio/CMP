@@ -1,0 +1,120 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Domicilio
+
+<script>
+    $(document).ready(function(){if("@Model.Opcional"=="OK"){FullMsg.Alert("Se grabaron los datos correctamente");if(parseInt("@Model.Id_Domicilio")>0){$("#Id_Domicilio").val("@Model.Id_Domicilio")}}$("#Nombre_Ubigeo").autocomplete({source:FullPathSrv+"Cliente/ListarUbigeoPeru",select:function(a,b){$("#Id_Ubigeo").val(b.item.id)}})})
+</script>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Id_Tipo_Via" class="control-label col-md-4 input-sm">Tipo Vía:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Tipo_Via, new SelectList((List<Tb_Maestras>)ViewBag.LstVia, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Via), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Nombre_Via" class="control-label col-md-4 input-sm">Nombre Vía:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nombre_Via, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Nro_Via" class="control-label col-md-4 input-sm">Nro. Vía:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nro_Via, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Id_Tipo_Zona" class="control-label col-md-4 input-sm">Tipo Zona:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Tipo_Zona, new SelectList((List<Tb_Maestras>)ViewBag.LstZona, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Zona), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Nombre_Zona" class="control-label col-md-4 input-sm">Nombre Zona:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nombre_Zona, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Manzana" class="control-label col-md-4 input-sm">Manzana:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Manzana, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Lote" class="control-label col-md-4 input-sm">Lote:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Lote, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Nro_Km" class="control-label col-md-4 input-sm">Kilometro:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nro_Km, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Nro_Interior" class="control-label col-md-4 input-sm">Interior:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nro_Interior, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="Seccion" class="control-label col-md-4 input-sm">Sección Int:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Seccion, new { @class = "form-control input-sm text-uppercase", @maxlength = "5" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <label for="Nombre_Ubigeo" class="control-label col-md-1 input-sm" style="width:15.9%;">Ubigeo/ Distrito:</label>
+            <div class="col-md-8" style="width:84.1%;">
+                @Html.TextBoxFor(m => m.Nombre_Ubigeo, new { @class = "form-control input-sm text-uppercase", @maxlength = "200" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Referencia" class="control-label col-md-1 input-sm" style="width:10.4%;">Referencia:</label>
+            <div class="col-md-8" style="width:89.6%;">
+                @Html.TextAreaFor(m => m.Referencia, new { @class = "form-control input-sm noresize  text-uppercase", @maxlength = "500" })
+            </div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Domicilio)
+@Html.HiddenFor(m => m.Id_Ubigeo)
+@Html.HiddenFor(m => m.Opcional)
+@Html.HiddenFor(m => m.Nro_Departamento)
+@Html.HiddenFor(m => m.Domicilio_Completo)

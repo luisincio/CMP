@@ -1,0 +1,58 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<ColegiadoMin>
+<script>
+    $(document).ready(function () {
+        $('input[name="rdoSelect"]').click(function ()
+        {
+            $("#Id_Colegiado").val($(this).val());
+            $("#DNI").val($(this).attr("fieldDni"));
+            $("#Colegiatura").val($(this).attr("fieldColegiado"));
+            $("#Estado").val($(this).attr("fieldEstado"));
+            $("#Apellidos_Colegiado").val($(this).attr("fieldApellido"));
+            $("#Nombres_Colegiado").val($(this).attr("fieldNombre"));
+            $("#Nombres_Colegiado").val($(this).attr("fieldNombre"));
+            $("#Correo").val($(this).attr("fieldCorreo"));
+            0 == $("#Correo").val().trim().length ? $("#Correo").prop("readonly", !1) : $("#Correo").prop("readonly", !0);
+            0 == $("#fieldDni").val().trim().length ? $("#fieldDni").prop("readonly", !1) : $("#fieldDni").prop("readonly", !0);
+        })
+    });
+</script>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-4 text-center">Nombre Completo</th>
+            <th class="col-lg-0 text-center">CMP</th>
+            <th class="col-lg-1 text-center">Documento</th>
+            <th class="col-lg-5 text-center">Correo</th>
+            <th class="col-lg-0 text-center">A</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Nombre_Completo</td>
+                    <td>@item.Colegiado</td>
+                    <td>@item.Nro_Documento</td>
+                    <td>@item.Correo</td>
+                    <td align="center">
+                        @Html.RadioButton("rdoSelect", item.Id_Persona, new { fieldCorreo = item.Correo, fieldColegiado = item.Colegiado, fieldEstado = item.Estado, fieldDni = item.Nro_Documento, fieldApellido = item.Nombre_Completo.Substring(0, item.Nombre_Completo.IndexOf(",")), fieldNombre = item.Nombre_Completo.Substring(item.Nombre_Completo.IndexOf(",") + 2, item.Nombre_Completo.Length - (item.Nombre_Completo.IndexOf(",") + 2)) })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

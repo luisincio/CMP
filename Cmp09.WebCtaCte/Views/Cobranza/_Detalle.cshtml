@@ -1,0 +1,49 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<Tb_Cobranza>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-1 text-center">Colegiado</th>
+            <th class="col-lg-3 text-center">Nombre Completo</th>
+            <th class="col-lg-1 text-center">DNI</th>
+            <th class="col-lg-1 text-center">Fecha</th>
+            <th class="col-lg-0 text-center">Año</th>
+            <th class="col-lg-0 text-center">Mes</th>
+            <th class="col-lg-2 text-center">Servicio</th>
+            <th class="col-lg-1 text-center">Monto</th>
+            <th class="col-lg-0 text-center">Pagar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Colegiatura</td>
+                    <td>@item.Nombre_Completo</td>
+                    <td>@item.Nro_Documento</td>
+                    <td>@item.Fecha.ToShortDateString()</td>
+                    <td align="center">@item.Año</td>
+                    <td align="center">@item.Mes</td>
+                    <td>@item.Servicio</td>
+                    <td align="right">@item.Monto</td>
+                    <td align="center">
+                        @Html.CheckBox("Pagar", new { @value = item.Id_Cobro })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

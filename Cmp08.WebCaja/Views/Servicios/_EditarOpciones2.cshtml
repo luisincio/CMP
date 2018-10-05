@@ -1,0 +1,165 @@
+﻿@model Cmp02.Entities.Tb_Servicios
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="ArtículoSustituto1" class="control-label col-md-4 input-sm">Artículo Sustituto 1:</label>
+            <div class="col-md-8">
+                @Html.TextBox("ArtículoSustituto1", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="ArtículoSustituto2" class="control-label col-md-4 input-sm">Artículo Sustituto 2:</label>
+            <div class="col-md-8">
+                @Html.TextBox("ArtículoSustituto2", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Seguir" class="control-label col-md-4 input-sm">Seguir:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Seguir", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CategoriaLote" class="control-label col-md-4 input-sm">Categoría Lote:</label>
+            <div class="col-md-8">
+                @Html.TextBox("CategoriaLote", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="VidaUtilMinima1" class="control-label col-md-4 input-sm">Vida Útil Mínima:</label>
+            <div class="col-md-8">
+                @Html.TextBox("VidaUtilMinima1", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="VidaUtilMinima2" class="control-label col-md-4 input-sm">Vida Útil Mínima:</label>
+            <div class="col-md-8">
+                @Html.TextBox("VidaUtilMinima2", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Advertir" class="control-label col-md-4 input-sm">Advertir:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Advertir", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DiasAntesVencer" class="control-label col-md-4 input-sm">Días Antes Vencer:</label>
+            <div class="col-md-8">
+                @Html.TextBox("DiasAntesVencer", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Advertir" class="control-label col-md-4 input-sm">Pedido en Espera:</label>
+            <div class="col-md-8">
+                @Html.TextBox("PedidoEspera", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DíasGarantía" class="control-label col-md-4 input-sm">Días de Garantía:</label>
+            <div class="col-md-8">
+                @Html.TextBox("DíasGarantía", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="TipoCategoria" class="control-label col-md-4 input-sm">Tipo Cat.:</label>
+            <div class="col-md-8">
+                @Html.TextBox("TipoCategoria", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="FamiliaCaegoria" class="control-label col-md-4 input-sm">Familia Cat.:</label>
+            <div class="col-md-8">
+                @Html.TextBox("FamiliaCaegoria", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="SubFamiliaCategoria" class="control-label col-md-4 input-sm">SubFamilia Cat.:</label>
+            <div class="col-md-8">
+                @Html.TextBox("SubFamiliaCategoria", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="CodigoABC" class="control-label col-md-4 input-sm">Código ABC:</label>
+            <div class="col-md-8">
+                @Html.TextBox("CodigoABC", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Consecutivo" class="control-label col-md-4 input-sm">Consecutivo:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Consecutivo", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Color" class="control-label col-md-4 input-sm">Color:</label>
+            <div class="col-md-8">
+                @Html.TextBox("Color", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="IncluirCatalogo" class="control-label col-md-2 input-sm" style="width:16.1%;">Incluir en Cátalogo:</label>
+            <div class="col-md-10" style="width:83.9%;">
+                @Html.TextBox("IncluirCatalogo", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id_Servicio)
+@Html.HiddenFor(m => m.Opcional)

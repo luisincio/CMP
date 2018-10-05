@@ -1,0 +1,85 @@
+﻿<script>
+    $(document).ready(function ()
+    {
+        $("#btnBuscar").click(function () {
+            var a = $("#DetalleLista");
+            $.getJSON(FullPathSrv + "Compras/BuscarLineaJSON", { vDescripcion: $("#txtBusqueda").val() }, function (b) {
+                a.empty();
+                for (var c = 0; c < b.length; c++) {
+                    var d = "",
+                        d = "<tr>",
+                        d = d + '<td class="hidden">' + b[c].Id_Maestras + '</td>',
+                        d = d + '<td class="left">' + b[c].Valor1 + '</td>',
+                        d = d + '<td class="left">' + b[c].Descripcion + '</td>',
+                        d = d + '<td align="center">',
+                        d = d + '<input type="radio" name="RadioDocOrigen" data-key="' + b[c].Valor1 + '" value="' + b[c].Descripcion + '" data-full="' + b[c].Id_Maestras + '" />',
+                        d = d + '</td>',
+                        d = d + '</tr>';
+                    a.append(d)
+                }
+            })
+        });
+
+        $("#btnLimpiar").click(function () {
+            $("#DetalleLista").empty(), $("#txtBusqueda").val(""), $("#txtBusqueda").focus();
+        });
+
+    })
+
+    function Aceptar()
+    {
+        var p = $("input:radio[name=RadioDocOrigen]:checked").attr("data-key");
+        var o = $("input:radio[name=RadioDocOrigen]:checked").val();
+        var f = $("input:radio[name=RadioDocOrigen]:checked").attr("data-full");
+        $("#TempRow").remove();
+        var d = "",
+        d = "<tr>",
+        d = d + '<td class="hidden">' + f.toString() + '</td>',
+        d = d + '<td class="text-left">' + p + '</td>',
+        d = d + '<td class="text-left">' + o + '</td>',
+        d = d + '<td align="right" style="padding-bottom:0px;padding-left:1px;padding-right:1px;padding-top:4px;" >',
+        d = d + '<input type="number" name="Debito" value="0" data-FullId="' + f + '" class="form-control input-sm text-right" style="padding-left:5px;padding-right:5px;" />',
+        d = d + '</td>',
+        d = d + '<td align="right" style="padding-bottom:0px;padding-left:1px;padding-right:1px;padding-top:4px;" >',
+        d = d + '<input type="number" name="Credito" value="0" data-FullId="' + f + '" class="form-control input-sm text-right" style="padding-left:5px;padding-right:5px;" />',
+        d = d + '</td>',
+        d = d + '<td class="text-center"> <button type="button" class="btn btn-danger btn-xs" title="Eliminar Cuenta" onclick="fnEliminar($(this));"><span class="glyphicon glyphicon-trash"></span>&nbsp;</button> </td>',
+        d = d + '</tr>';
+        $("#tblFacDEt").append(d);
+    }
+</script>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="txtBusqueda" class="control-label col-md-2 input-sm">Buscar Cuenta</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <input type="text" placeholder="Ingrese servicio o articulo a buscar" name="txtBusqueda" id="txtBusqueda" tabindex="0" class="form-control input-sm">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnBuscar" name="btnBuscar"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+                            <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnLimpiar"><span class="glyphicon glyphicon-new-window"></span> Limpiar</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12" style="max-height:360px; overflow-y: scroll;">
+            <table class="table table-bordered table-responsive table-hover">
+                <thead class="tablahead">
+                    <tr>
+                        <th class="hidden">Impuesto</th>
+                        <th class="col-lg-2 centro">Código</th>
+                        <th class="col-lg-9 centro">Descripción</th>
+                        <th class="col-lg-1 centro">Selección</th>
+                    </tr>
+                </thead>
+                <tbody id="DetalleLista"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

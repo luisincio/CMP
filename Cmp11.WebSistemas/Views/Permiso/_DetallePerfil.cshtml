@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Permiso>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-4 text-center">Etiqueta</th>
+            <th class="col-lg-4 text-center">Metodo</th>
+            <th class="col-lg-3 text-center">Controladora</th>
+            <th class="col-lg-0 text-center">Activos</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Etiqueta</td>
+                    <td>@item.Accion</td>
+                    <td>@item.Controladora</td>
+                    <td align="center">
+                        @Html.CheckBox("Permiso", item.Seleccionado, new { @value = item.Id_Permiso })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,83 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<Tb_Colegiado_Carnet>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-1 text-center">Colegiado</th>
+            <th class="col-lg-3 text-center">Nombre Completo</th>
+            <th class="col-lg-1 text-center">Tipo Carnet</th>
+            <th class="col-lg-3 text-center">Consejo</th>
+            @*<th class="col-lg-1 text-center">Registro</th>*@
+            <th class="col-lg-0 text-center">Emitido</th>
+            <th class="col-lg-0 text-center">Fecha Emitido</th>
+            <th class="col-lg-0 text-center">Entrega</th>
+            <th class="col-lg-0 text-center">Fecha Entrega</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Id_Colegiado</td>
+                    <td>@item.Nombre_Completo</td>
+                    <td>@item.Tipo_Carnet</td>
+                    <td>@item.Consejo_Regional</td>
+                    @*<td>@item.Fec_Ingreso.ToString("dd/MM/yyyy")</td>*@
+                    @if (Convert.ToDateTime(item.Fec_Emision).ToString("dd/MM/yyyy") != "01/01/0001")
+                    {
+                        <td align="center">
+                            @Html.CheckBox("Emision", true, new { @value = item.Id_Persona, @datafull = item.Id_Carnet })
+                        </td>
+                        <td id="@item.Id_Carnet.ToString()Emision">
+                            @Convert.ToDateTime(item.Fec_Emision).ToString("dd/MM/yyyy")
+                        </td>
+                    }
+                    else
+                    {
+                        <td align="center">
+                            @Html.CheckBox("Emision", false, new { @value = item.Id_Persona, @datafull = item.Id_Carnet })
+                        </td>
+                        <td id="@item.Id_Carnet.ToString()Emision"></td>
+                    }
+
+                    @if (Convert.ToDateTime(item.Fec_Entrega).ToString("dd/MM/yyyy") != "01/01/0001")
+                    {
+                        <td align="center">
+                            @*@Html.CheckBox("Entrega", true, new { @value = item.Id_Carnet })*@
+                            @Html.CheckBox("Entrega", true, new { @value = item.Id_Persona, @datafull = item.Id_Carnet })
+                        </td>
+                        <td id="@item.Id_Carnet.ToString()Entrega">
+                            @Convert.ToDateTime(item.Fec_Entrega).ToString("dd/MM/yyyy")
+                        </td>
+                    }
+                    else
+                    {
+                        <td align="center">
+                            @Html.CheckBox("Entrega", false, new { @value = item.Id_Persona, @datafull = item.Id_Carnet })
+                            @*@Html.CheckBox("Entrega", false, new { @value = item.Id_Carnet })*@
+                        </td>
+                        <td id="@item.Id_Carnet.ToString()Entrega"></td>
+                    }
+
+                    @*<td align="center">
+                        @Html.CheckBox("Entrega", new { @value = item.Id_Carnet })
+                    </td>
+                    <td>@item.Fec_Entrega</td>*@
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

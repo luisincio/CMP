@@ -1,0 +1,80 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+<script>
+    //$(document).ready(function () {
+    //    $('input[name="Debito"]').bind("blur", function () {
+    //        alert("dddddd");
+    //        //fnCalcular();
+    //    });
+    //    $('input[name="Debito"]').on("blur", function () {
+    //        alert("abuke");
+    //        //fnCalcular();
+    //    });
+    //});
+
+    function fnEliminar(t) { t.parent().parent().remove(), 1 == $("#FullTbl>tbody>tr").length && ($("#tblFacDEt").empty(), $("#tblFacDEt").append("<tr><td id='TempRow' colspan='7' style='color:red'>No hay registros</td></tr>")), fnCalcular() }
+    function fnCalcular()
+    {
+        //debugger;
+        var hTotalDiario = 0, hTotalCredito = 0, hTotalDiferencia = 0;
+        $("#TotalDiario,#hdTotalDiario").val(hTotalDiario.toFixed(2).toString());
+        $("#TotalCredito,#hdTotalCredito").val(hTotalCredito.toFixed(2).toString());
+        $("#TotalDiferencia,#hdTotalDiferencia").val(hTotalDiferencia.toFixed(2).toString());
+
+        $("#FullTbl tbody tr").each(function (index)
+        {
+            if ($(this).find("td").eq(0).html() != null)
+            {
+                hTotalDiario = hTotalDiario + parseFloat($(this).find("td").eq(3).find("input").val()),
+                hTotalCredito = hTotalCredito + parseFloat($(this).find("td").eq(4).find("input").val()),
+                hTotalDiferencia = hTotalDiario - hTotalCredito;
+                $("#TotalDiario,#hdTotalDiario").val(hTotalDiario.toFixed(2).toString());
+                $("#TotalCredito,#hdTotalCredito").val(hTotalCredito.toFixed(2).toString());
+                $("#TotalDiferencia,#hdTotalDiferencia").val(hTotalDiferencia.toFixed(2).toString());
+            }
+        })
+    }
+</script>
+<table id="FullTbl" class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="hidden">Id</th>
+            <th class="col-lg-2 text-center">Cuenta</th>
+            <th class="col-lg-6 text-center">Descripción</th>   
+            <th class="col-lg-2 text-center">Débito</th>
+            <th class="col-lg-2 text-center">Crédito</th>
+            <th class="col-lg-0 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody id="tblFacDEt">
+        <tr>
+            <td id="TempRow" colspan="5" style="color:red">No hay registros</td>
+        </tr>
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="TotalDiario" class="control-label col-md-4 input-sm">Total Débito:</label>
+            <div class="col-md-8">
+                @Html.TextBox("TotalDiario", "0.00", new { @class = "form-control input-sm text-right", @maxlength = "20", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="TotalCredito" class="control-label col-md-4 input-sm">Total Crédito:</label>
+            <div class="col-md-8">
+                @Html.TextBox("TotalCredito", "0.00", new { @class = "form-control input-sm text-right", @maxlength = "20", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="TotalDiferencia" class="control-label col-md-4 input-sm">Total Diferencia:</label>
+            <div class="col-md-8">
+                @Html.TextBox("TotalDiferencia", "0.00", new { @class = "form-control input-sm text-right", @maxlength = "20", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>

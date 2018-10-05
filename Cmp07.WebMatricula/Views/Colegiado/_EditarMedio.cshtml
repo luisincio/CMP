@@ -1,0 +1,20 @@
+﻿@using Cmp02.Entities;
+@model Tb_Medio_Contacto
+
+@using (Ajax.BeginForm("Medios", "Cliente", new AjaxOptions { UpdateTargetId = "divMedioContacto", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmMedioContacto" }))
+{
+    <div id="divMedioContacto">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmMedio").submit();
+                //document.location = FullPathSrv + "Cliente/Registrar?vId=@Model.Id_Persona";
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarMedio2", Model)   
+        }
+    </div>
+}

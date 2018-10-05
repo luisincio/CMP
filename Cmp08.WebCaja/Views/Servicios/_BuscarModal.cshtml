@@ -1,0 +1,134 @@
+﻿@using Cmp01.Utilities;
+
+<script>
+
+    $(function () {
+
+        $("#btnBuscar").click(function ()
+        {
+            if (2 < $.trim($("#txtBusqueda").val()).length || $("#Tipo_Documentosunat").val() == "@Convert.ToInt32(EnumTipoDocSunat.NOTACREDITO)" || $("#IdTipoArticulo").val()!="" ) {
+                var a = $("#DetalleLista");
+                $.getJSON(FullPathSrv + "Servicios/BuscarJSON", { vDescripcion: $("#txtBusqueda").val(), origen: $("#id_referencia").val(), documento: $("#DNI").val(), TipoArticulo: $("#IdTipoArticulo").val() }, function (b) {
+                    a.empty();
+                    for (var c = 0; c < b.length; c++) {
+                        var d = "",
+                            d = "<tr>",
+                            d = d + '<td class="left">' + b[c].Codigo + "</td>",
+                            d = d + '<td class="left">' + b[c].Descripcion + "</td>",
+                            d = d + '<td class="text-right">' + parseFloat(b[c].PrecioUnitario).toFixed(2) + "</td>",
+                            d = d + "<td>";
+                            if ($("#Tipo_Documentosunat").val() == "@Convert.ToInt32(EnumTipoDocSunat.NOTACREDITO)"){
+                                d = d + '<input type="number" min="1" onblur="if ($(this).val() > ' + b[c].CantidadMax + ') {$(this).val(' + b[c].CantidadMax + ');}" max=' + b[c].CantidadMax + ' name="CantidadModal" value="" data-FullId="' + b[c].Codigo + '" data-FullPrecio="' + b[c].PrecioUnitario + '" class="form-control input-sm text-right FullInt" onKeyPress="return soloNumeros(event)" />';
+                            }
+                            else{
+                                d = d + '<input type="number" min="1" max="@Variables.MaxUnidades" name="CantidadModal" value="" data-FullId="' + b[c].Codigo + '" data-FullPrecio="' + b[c].PrecioUnitario + '" class="form-control input-sm text-right FullInt" onKeyPress="return soloNumeros(event)" />';
+                            }
+
+                            d = d + "</td>",
+                            d = d + "</td><input type='checkbox' class='form-check-input' id='exampleCheck1'>",
+                            d = d + "</tr>";
+                        a.append(d)
+                    }
+                })
+            }
+        });
+
+        $("#btnLimpiar").click(function ()
+        {
+            $("#DetalleLista").empty(), $("#txtBusqueda").val(""), $("#txtBusqueda").focus();
+        });
+
+    });
+
+    function validarMax_onblur(id,max) {
+        
+    }
+
+    function Aceptar()
+    {
+        var a = "";
+        $("#DetalleLista tr").each(function ()
+        {
+            parseInt($(this).find("input").val()) > 0 && (a = a + $.trim($(this).find("input").attr("data-FullId")) + "|" + $.trim($(this).find("input").val()) + ",")
+        }), a.length > 0 && (a = a.substr(0, a.length - 1)),
+            $.getJSON(FullPathSrv + "Comprobante/Detalle", { vServicios: a, vId: $("#frmCabecera").find("#Id_Comprobante").val(), documento: $("#DNI").val(), TipoArticulo: $("#IdTipoArticulo").val() }).done(function (a)
+        {
+            if ("1" == a.rpta) {
+                $("#frmDetalle").submit(), modal.modal("hide")
+            }
+            else
+                (
+                    FullMsg.Alert("Alerta: " + a.mensaje),
+                    $("#frmDetalle").submit()
+                )
+        }).fail(function (a) { FullMsg.Alert("Error de conectividad con el Servidor") })
+    }
+
+    function soloNumeros(e) {
+        var key = window.Event ? e.which : e.keyCode
+        return ((key >= 48 && key <= 57) || (key == 8))
+    }
+</script>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="txtBusqueda" class="control-label col-md-2 input-sm">Buscar Artículo</label>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="col-md-7" style="padding:0px;">
+                            <input type="text" placeholder="Ingrese servicio o articulo a buscar" name="txtBusqueda" id="txtBusqueda" tabindex="0" class="form-control input-sm">
+                            <span class="input-group-addon" style="width:0px; padding-left:0px; padding-right:0px; border:none;">
+
+
+                            </span>
+                        </div>
+                        <div class="col-md-4" style="padding:0px;">
+
+                            <select id="IdTipoArticulo" name="IdTipoArticulo" class="form-control input-sm text-uppercase">
+                                <option selected="selected" value="">TODOS</option>
+                                <option value="C">Cuota COLEGIADO</option>
+                                <option value="S">Cuota SEMEFA</option>
+                            </select>
+                        </div>
+                            @*<div class="input-group-btn bs-dropdown-to-select-group">
+                <button type="button" class="btn btn-default dropdown-toggle as-is bs-dropdown-to-select" data-toggle="dropdown" aria-expanded="false" style="padding-bottom: 3px; padding-top: 3px;">
+                    <span data-bind="bs-drp-sel-label">Select...</span>
+                    <input type="hidden" name="selected_value" data-bind="bs-drp-sel-value" value="">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu" style="">
+                    <li data-value="1"><a href="#">One</a></li>
+                    <li data-value="2"><a href="#">Two</a></li>
+                    <li data-value="3"><a href="#">Three</a></li>
+                </ul>
+            </div>*@<div class="col-md-1" style="padding:0px;">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnBuscar" name="btnBuscar"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+                                <button type="button" class="btn btn-info" style="padding-bottom: 3px; padding-top: 3px;" id="btnLimpiar"><span class="glyphicon glyphicon-new-window"></span> Limpiar</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12" style="max-height:360px; overflow-y: scroll;">
+            <table class="table table-bordered table-responsive table-hover">
+                <thead class="tablahead">
+                    <tr>
+                        <th class="col-lg-1 text-center">Código</th>
+                        <th class="col-lg-6 text-center">Descripción</th>
+                        <th class="col-lg-1 text-center">Precio</th>
+                        <th class="col-lg-2 text-center">Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody id="DetalleLista"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

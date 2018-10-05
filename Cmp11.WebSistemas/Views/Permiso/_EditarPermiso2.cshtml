@@ -1,0 +1,53 @@
+﻿@model Cmp02.Entities.Tb_Permiso
+
+<script>
+    $(document).ready(function () { if ("@Model.Opcional" == "OK") { modal.modal("hide"); $("#frmPermiso").submit(); } })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Perfil" class="control-label col-md-2 input-sm" style="width:16.1%!important">Nombre Etiqueta:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Etiqueta, new { @class = "form-control input-sm text-uppercase", @maxlength = "25" })
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-2 input-sm" style="width:16.1%!important">Metodo:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Accion, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-2 input-sm" style="width:16.1%!important">Controladora:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Controladora, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Descripcion" class="control-label col-md-2 input-sm" style="width:16.1%!important">Descripción:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.HiddenFor(m => m.Id_Permiso)
+@Html.HiddenFor(m => m.Opcional)
+
+

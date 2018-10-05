@@ -1,0 +1,273 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Colegiado
+@{
+    ViewBag.Title = "Registrar Datos Personales";
+    Tb_Comprobantecabecera Temp = (Tb_Comprobantecabecera)ViewBag.Comprobante;
+}
+
+<script>
+    function fnMediosContacto(a, b) { $.get(FullPathSrv + "Colegiado/Medios", { vId_Persona: a, vId: b }, function (a) { modal = FullMsg.Modal({ title: "Nuevo Medio de Contacto", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmMedioContacto").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } function fnEliminarMedio(a) { FullMsg.Confirm("¿Seguro de Eliminar el medio?", function (b) { b && $.get(FullPathSrv + "Colegiado/Eliminae_Medio", { vId: a }, function (a) { $("#frmMedio").submit() }) }) } function fnEditarEspecialidad(a, b) { $.get(FullPathSrv + "Colegiado/Especialidad", { vId_Persona: a, vId: b }, function (a) { modal = FullMsg.Modal({ title: "Nuevo Estudio", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarEspecialidad").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } function fnEliminarEspecialidad(a) { FullMsg.Confirm("¿Seguro de Eliminar la Especialidad?", function (b) { b && $.get(FullPathSrv + "Colegiado/Elimina_Especialidad", { vId: a }, function (a) { $("#frmEspecialidad").submit() }) }) } function fnEditarTrabajo(a, b) { $.get(FullPathSrv + "Colegiado/Trabajo", { vId_Persona: a, vId: b }, function (a) { modal = FullMsg.Modal({ title: "Nueva Información Laboral", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarTrabajo").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } function fnEliminarTrabajo(a) { FullMsg.Confirm("¿Seguro de Eliminar la Información Laboral?", function (b) { b && $.get(FullPathSrv + "Colegiado/Elimina_Trabajo", { vId: a }, function (a) { $("#frmTrabajos").submit() }) }) } function fnEditarConsejo(a, b) { $.get(FullPathSrv + "Colegiado/Consejo", { vId_Persona: a, vId: b }, function (a) { modal = FullMsg.Modal({ title: "Nueva Consejo", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarConsejo").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } function fnEliminarConsejo(a) { FullMsg.Confirm("¿Seguro de Eliminar el consejo seleccionado?", function (b) { b && $.get(FullPathSrv + "Colegiado/Elimina_Consejo", { vId: a }, function (a) { $("#frmConsejo").submit() }) }) }
+    function fnEditarEstado(a, b) { $.get(FullPathSrv + "Colegiado/Estado", { vId_Persona: a, vId: b }, function (a) { modal = FullMsg.Modal({ title: "Nueva Estado", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return ($("#frmEditarEstado").submit()), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } var modal;
+    $(document).ready(function () {
+        $("#Id_Origen").on("change", function ()
+        {
+            $("#Nro_Resolucion, #titulofelpino").show();
+            if ($("#Id_Origen").val().toString() == "@Variables.Peru")
+            {
+                $("#Id_Situacion").val(@Convert.ToInt32( EnumSituacionEstudio.EXPEDIDO));
+                $("#Nro_Resolucion, #titulofelpino").hide();
+                $("#Nro_Resolucion").val("");
+                $("#Id_Situacion").change();
+            }
+            else
+            {
+                $("#Id_Situacion").val(@Convert.ToInt32( EnumSituacionEstudio.RECONOCIDO));
+                $("#Id_Situacion").change();
+            }
+        })
+
+        $('.panel-collapse:not(".in")').collapse("show"), $("#btnAgregarMedio").on("click", function () { fnMediosContacto("@Model.Persona.Id_Persona", 0) }), $("#btnAgregarEspecialidad").on("click", function () { fnEditarEspecialidad("@Model.Persona.Id_Persona", 0) }), $("#btnAgregarTrabajo").on("click", function () { fnEditarTrabajo("@Model.Persona.Id_Persona", 0) }), $("#btnAgregarConsejo").on("click", function () { fnEditarConsejo("@Model.Persona.Id_Persona", 0) }),
+        $("#btnAgregarEstado").on("click", function () { fnEditarEstado("@Model.Persona.Id_Persona", 0) }),
+            $("#btnMatricular").on("click", function () { FullMsg.Confirm("¿Seguro de generar su matricula?", function (a) { a && $.get(FullPathSrv + "Colegiado/Matricular", { vId: "@Model.Persona.Id_Persona" }, function (a) { a > 0 ? (FullMsg.Alert("Se genero la código de colegiatura"), document.location = FullPathSrv + "Colegiado/Registrar?vId=@Model.Persona.Id_Persona") : FullMsg.Alert("Ocurrio un error al generar el código de colegiatura") }) }) }),
+        $("#btnRegresar").on("click", function ()
+        {
+            document.location = FullPathSrv + "Bandeja/Listar";
+        })
+
+    });
+</script>
+
+@Html.Hidden("#ID_UBIGEO", "")
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Datos Principales
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            @using (Ajax.BeginForm("Registrar", "Colegiado", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmDatosPrincipal" }))
+            {
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_DatosPrincipales", Model.Persona)
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Dirección
+                </a>
+            </h3>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("Direccion", "Colegiado", new AjaxOptions { UpdateTargetId = "divDireccion", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmDireccion" }))
+            {
+                <div id="divDireccion" class="panel-body">
+                    @Html.Partial("_Direccion", Model.Domicilio)
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Medios de Contacto
+                </a>
+            </h3>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaMedios", "Colegiado", new { vId = Model.Persona.Id_Persona }, new AjaxOptions { UpdateTargetId = "divMedios", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmMedio" }))
+            {
+                <div class="panel-body">
+                    <div id="divMedios">
+                        @Html.Partial("_ListaMedios", Model.Medios)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarMedio" class="btn btn-primary">Agregar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Estudio Principal
+                </a>
+            </h3>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse in">
+            @using (Ajax.BeginForm("Estudio", "Colegiado", new AjaxOptions { UpdateTargetId = "divEstuddio", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEstuddio" }))
+            {
+                <div id="divEstuddio" class="panel-body">
+                    @Html.Partial("_Estudio", Model.Estudio)
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Estudios
+                </a>
+            </h3>
+        </div>
+        <div id="collapse5" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaEspecialidad", "Colegiado", new { vId = Model.Persona.Id_Persona }, new AjaxOptions { UpdateTargetId = "divEspecialidad", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEspecialidad" }))
+            {
+                <div class="panel-body">
+                    <div id="divEspecialidad">
+                        @Html.Partial("_ListaEspecialidad", Model.Especialidades)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarEspecialidad" class="btn btn-primary">Agregar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Información Laboral
+                </a>
+            </h3>
+        </div>
+        <div id="collapse6" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaTrabajos", "Colegiado", new { vId = Model.Persona.Id_Persona }, new AjaxOptions { UpdateTargetId = "divTrabajos", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmTrabajos" }))
+            {
+                <div class="panel-body">
+                    <div id="divTrabajos">
+                        @Html.Partial("_ListaTrabajos", Model.Trabajos)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarTrabajo" class="btn btn-primary">Agregar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse7">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Consejo Regional
+                </a>
+            </h3>
+        </div>
+        <div id="collapse7" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaConsejos", "Colegiado", new { vId = Model.Persona.Id_Persona }, new AjaxOptions { UpdateTargetId = "divConsejos", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmConsejo" }))
+            {
+                <div class="panel-body">
+                    <div id="divConsejos">
+                        @Html.Partial("_ListaConsejos", Model.Concejos)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarConsejo" class="btn btn-primary">Agregar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse8">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Estados
+                </a>
+            </h3>
+        </div>
+        <div id="collapse8" class="panel-collapse collapse">
+            @using (Ajax.BeginForm("ListaEstados", "Colegiado", new { vId = Model.Persona.Id_Persona }, new AjaxOptions { UpdateTargetId = "divEstados", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEstados" }))
+            {
+                <div class="panel-body">
+                    <div id="divEstados">
+                        @Html.Partial("_ListaEstados", Model.Estados)
+                    </div>
+                    <hr class="full-line" />
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" id="btnAgregarEstado" class="btn btn-primary">Agregar</button>
+                            @*<button type="button" class="btn btn-default">Cancelar</button>*@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @*<hr class="full-line" />*@
+            <div class="row">
+                <div class="col-md-6">
+                    @if (Convert.ToInt32(Model.Persona.Colegiado) == 0)
+                    {
+                        <label class="control-label col-md-5 input-sm" style="color:red">Comprobante: @Temp.Comprobante @Temp.Nro_Documento</label>
+                        <label class="control-label col-md-5 input-sm" style="color:red">Fecha de Pago: @Temp.Fec_Ingreso.ToShortDateString()</label>
+                    }
+                </div>
+                <div class="col-md-6 text-right">
+                    @if (Convert.ToInt32(Model.Persona.Colegiado) == 0)
+                    {
+                        <button type="button" id="btnMatricular" class="btn btn-primary">Matricular</button>
+                    }
+                    @if (Convert.ToInt32(Model.Persona.Colegiado) > 0)
+                    {
+                        @*<button type="button" id="btnFicha" class="btn btn-primary" onclick="fnWindowPopup('@Url.Action("ImprimirFicha", "Reportes", new { vId = Model.Persona.Id_Persona })', 'Fullsito', '800', '620')">Imprimir Diploma</button>*@
+                        @*if (Model.Especialidades.Count > 0)
+                        {
+                          <button type="button" id="btnDiploma" class="btn btn-primary" onclick="fnWindowPopup('@Url.Action("ImprimirGraduado", "Reportes", new { vId = Model.Especialidades[0].Id_Especialidad })', 'Fullsito', '800', '620')">Imprimir Diploma</button>    
+                        }*@
+                        @*<button type="button" id="btnFicha" class="btn btn-primary" onclick="fnWindowPopup('@Url.Action("ImprimirFicha", "Reportes", new { vId = Model.Persona.Id_Persona })', 'Fullsito', '800', '620')">Imprimir Ficha</button>*@
+                        
+                        <button type="button" id="btnDiploma" class="btn btn-primary" onclick="fnWindowPopup('@Url.Action("ImprimirGraduado", "Reportes", new { vId = Model.Persona.Id_Persona })', 'Fullsito', '800', '620')">Imprimir Diploma</button>    
+                        <button type="button" id="btnFicha" class="btn btn-primary" onclick="fnWindowPopup('@Url.Action("ImprimirFichaInterna", "Reportes", new { vId = Model.Persona.Id_Persona })', 'Fullsito', '800', '620')">Imp. Ficha Interna</button>
+                    }
+
+                    <button type="button" id="btnRegresar" class="btn btn-default">Regresar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contenedor" class='modal fade in contenedor' data-backdrop="static" data-keyboard="true">
+    <div class='seccionModal'>
+    </div>
+</div>
+

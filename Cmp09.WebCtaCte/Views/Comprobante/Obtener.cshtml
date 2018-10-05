@@ -1,0 +1,40 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Comprobantecabecera
+@{
+    ViewBag.Title = "Anular Comprobante";
+}
+<script>
+    $(document).ready(function () {
+
+        if ("@Model.Opcional" == "OK")
+        {
+            FullMsg.Alert("Se grabaron los datos correctamente");
+            if (parseInt("@Model.Id_Comprobante") > 0) {
+                $("#frmDetalle").find('#vId').val("@Model.Id_Comprobante");
+                $("#frmCabecera").find('#Id_Comprobante').val("@Model.Id_Comprobante");
+                Activabotonera();
+            }
+        }
+    })
+</script>
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Anular Comprobante
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            @using (Ajax.BeginForm("Obtener", "Comprobante", new AjaxOptions { UpdateTargetId = "divFull", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmAnular" }))
+            {
+                <div class="panel-body" id="divFull">
+                    @Html.Partial("_AnularComprobante", Model)
+                </div>
+            }
+        </div>
+    </div>
+</div>

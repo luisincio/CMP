@@ -1,0 +1,254 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model OtraCobranza
+@{
+    ViewBag.Title = "Entrada de Cobros";
+}
+
+<script>
+    $(document).ready(function () {
+        $("#btnCliente").on("click", function () {
+            $.get(FullPathSrv + "Cobranza/BuscarClienteGP", function (a) {
+                modal = FullMsg.Modal({
+                    title: "Buscar Cliente", message: a, buttons: [{
+                        label: "Aceptar", className: "btn-primary", callback: function () { return load_factura(), modal.modal("hide"), !1 }
+                    }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }]
+                }), modal.modal("show")
+            })
+        });
+        
+        $("#btnGrabar").on("click", function ()
+        {
+            var Obj = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+            Obj.IdRecibo = $("#IdRecibo").val();
+            Obj.IdLote = $("#IdLote").val();
+            Obj.Fecha = $("#Fecha").val();
+            Obj.IdCliente = $("#IdCliente").val();
+            Obj.Monto = $("#Monto").val();
+            Obj.IdMoneda = $("#IdMoneda").val();
+            Obj.Tipo = $("input[name=Tipo]:checked").val() //$("#Tipo").prop("checked"); //$("#Tipo").val();
+            Obj.IdChequera = $("#IdChequera").val();
+            Obj.NumChequeTarjeta = $("#NumChequeTarjeta").val();
+            Obj.IdTarjetaCredito = $("#IdTarjetaCredito").val();
+            Obj.TipoPagoSunat = $("#TipoPagoSunat").val();
+            Obj.Comentario= $("#Comentario").val();
+            Obj.NumeroFacturaVenta = $("#NumeroFacturaVenta").val();
+            Obj.MontoAplicacion = $("#MontoAplicacion").val();
+
+            $.ajax({
+                url: FullPathSrv + "Cobranza/GrabarCobrosEfectivo",
+                async: !1,
+                type: "POST",
+                data: JSON.stringify(Obj),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                error: function (a, e, o) { alert(a + "-" + e + "-" + o) },
+                success: function (a, e, o)
+                {
+                    a.indexOf("|") + 1 - a.length == 0 ?
+                        (FullMsg.Alert("Se envío correctamente"), setTimeout("Limpiar()", 5e3), $("#IdRecibo").val(a.substring(0, a.indexOf("|")))) :
+                        FullMsg.Alert("Ocurrio un error al procesar: " + a.substring(a.indexOf("|") + 1, a.length))
+                }
+            })
+
+            //$.ajax({
+            //    url: FullPathSrv + "Cobranza/GrabarCobrosEfectivo",
+            //    async: false,
+            //    type: "POST",
+            //    data: JSON.stringify(Obj),
+            //    dataType: "json",
+            //    contentType: "application/json; charset=utf-8",
+            //    error: function (jqXHR, textStatus, errorThrown)
+            //    {
+            //        alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+            //    },
+            //    success: function (a, textStatus, jqXHR)
+            //    {
+            //        if ((a.indexOf("|") + 1 - a.length) == 0) {
+
+            //            FullMsg.Alert("Se envío correctamente");
+            //            setTimeout("Limpiar()", 5000);
+            //            $("#IdRecibo").val(a.substring(0, a.indexOf("|")));
+            //        }
+            //        else {
+            //            FullMsg.Alert("Ocurrio un error al procesar: " + a.substring(a.indexOf("|") + 1, a.length));
+                        
+            //        }
+            //    }
+            //});
+        });
+    })
+
+    function load_factura() {
+        var vComodin = $("#FullData").val().indexOf("-")
+        $("#IdCliente").val($("#FullData").val().substring(0, vComodin))
+        $("#Cliente").val($("#FullData").val().substring(vComodin + 1, $("#FullData").val().length))
+
+        $("#NumeroFacturaVenta").empty();
+        $.getJSON(FullPathSrv + "Cobranza/ListarFacturas?vCliente=" + $("#IdCliente").val(), function (data) {
+            $.each(data, function (id, value) {
+                $("#NumeroFacturaVenta").append('<option value="' + value.Nro_Documento + '">' + value.Opcional + '</option>');
+            });
+        });
+    }
+
+    function Limpiar() { document.location = FullPathSrv + "Cobranza/EntradaCobros" };
+
+    function soloNumeros(e) {
+        var key = window.Event ? e.which : e.keyCode
+        return ((key >= 48 && key <= 57) || (key == 8))
+    }
+
+</script>
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Entrada de Cobros
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="IdRecibo" class="control-label col-md-3 input-sm">Nro. Recibo:</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    @Html.TextBox("IdRecibo", (string)ViewBag.NroGuia, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnBuscarComprobantes" class="btn btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="FechaDocumento" class="control-label col-md-3 input-sm">Fecha Doc.:</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    @Html.TextBox("Fecha", Variables.Hoy.ToShortDateString(), "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnFecha" class="btn btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="IdCliente" class="control-label col-md-3 input-sm">Id del Cliente:</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    @Html.TextBox("IdCliente", "", new { id = "IdCliente", @class = "form-control input-sm text-uppercase", @maxlength = "11", @readonly = "readonly" })
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btnCliente" class="btn btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Cliente" class="control-label col-md-3 input-sm">Nombre Cliente:</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("Cliente", "", new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="rbnCheque" class="control-label col-md-3 input-sm"> @Html.RadioButton("Tipo", 0, new { id = "rbnCheque" }) Cheque  </label>
+                                <label for="rbnEfectivo" class="control-label col-md-3 input-sm"> @Html.RadioButton("Tipo", 1, new { id = "rbnEfectivo" }) Efectivo  </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="TipoPagoSunat" class="control-label col-md-3 input-sm">Tipo de Pago:</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("TipoPagoSunat", new SelectList((List<Tb_Maestras>)ViewBag.LstTipoago, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="NumChequeTarjeta" class="control-label col-md-3 input-sm">Nro. de Tarjeta:</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("NumChequeTarjeta", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "20"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="IdChequera" class="control-label col-md-3 input-sm">Chequera:</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("IdChequera", new SelectList((List<Tb_Maestras>)ViewBag.LstChequera, "VALOR1", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="NumeroFacturaVenta" class="control-label col-md-3 input-sm">Facturas:</label>
+                            <div class="col-md-9">
+                                <select id="NumeroFacturaVenta" name="NumeroFacturaVenta" class="form-control input-sm text-uppercase">
+                                    <option value="">SELECCIONE</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="MontoAplicacion" class="control-label col-md-3 input-sm">Monto:</label>
+                            <div class="col-md-9">
+                                @*@Html.TextBox("MontoAplicacion", "0.00", new { @class = "form-control input-sm text-uppercase", @type = "number", @step = "0.01", @min = "0.00", @maxlength = "12"})*@
+                                @Html.TextBox("MontoAplicacion", "0", new { @class = "form-control input-sm ", @maxlength = "12" })
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="Comentario" class="control-label col-md-3 input-sm">Comentario:</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("Comentario", "", new { @class = "form-control input-sm text-uppercase", @maxlength = "30" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-6 text-right" id="DivBotonera">
+                        <button type="button" id="btnGrabar" class="btn btn-primary btn-sm">Grabar</button>
+                    </div>
+                </div>
+
+                @Html.Hidden("FullData", "")
+            </div>
+        </div>
+    </div>
+</div>

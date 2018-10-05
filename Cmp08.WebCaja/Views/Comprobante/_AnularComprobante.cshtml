@@ -1,0 +1,209 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Comprobantecabecera
+
+<script>
+    $(document).ready(function () { $("#btnAnular").on("click", function () { FullMsg.Confirm("¿Seguro de anular el comprobante?", function (a) { a && $.getJSON(FullPathSrv + "Comprobante/Anulacion", { vId_Comprobante: $("#Id_Comprobante").val() }).done(function (a) { "OK" == a ? (FullMsg.Alert("Se anulo correctamente"), $("#frmAnular").submit()) : FullMsg.Alert("Ocurrio un error") }).fail(function (a) { FullMsg.Alert("No se pudo conectar al servidor") }) }) }) });
+</script>
+@Html.HiddenFor(m => m.Id_Clientepagador)
+@Html.HiddenFor(m => m.Id_Colegiado)
+@Html.HiddenFor(m => m.Id_Sitio_Origen)
+@Html.HiddenFor(m => m.Nrodocumento_Gp)
+@Html.HiddenFor(m => m.Id_Comprobante)
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Tipo_Documentosunat" class="control-label col-md-3 input-sm">Tipo de Documento:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Tipo_Documentosunat, new SelectList((List<Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION", Model.Tipo_Documentosunat), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Documento" class="control-label col-md-3 input-sm">Nro Documento:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Nro_Documento, new { @class = "form-control input-sm text-uppercase" })
+                    <span class="input-group-btn">
+                        <button type="submit" id="btnBuscar" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Tipo_Documentosunat == (int)EnumTipoDocSunat.FACTURA)
+{
+    <div class="row" id="DivClientePagador">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="RUC" class="control-label col-md-3 input-sm">Cliente Pagador:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.RUC, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Razonsocial" class="control-label col-md-3 input-sm">Razon Social:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Razonsocial, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row" id="DivClientePagador" hidden="hidden">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="RUC" class="control-label col-md-3 input-sm">Cliente Pagador:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.RUC, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Razonsocial" class="control-label col-md-3 input-sm">Razon Social:</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.Razonsocial, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="DNI" class="control-label col-md-3 input-sm">Cliente:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.DNI, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Colegiatura" class="control-label col-md-3 input-sm">Colegiatura:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Colegiatura, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nombres_Colegiado" class="control-label col-md-3 input-sm">Nombres:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Nombres_Colegiado, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Apellidos_Colegiado" class="control-label col-md-3 input-sm">Apellidos:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Apellidos_Colegiado, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Moneda" class="control-label col-md-3 input-sm">Moneda:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Moneda, new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Moneda), "SELECCIONE", new { @class = "form-control input-sm text-uppercase", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Sitio_Destino" class="control-label col-md-3 input-sm">Sitio:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Sitio_Destino, new SelectList((List<Tb_Maestras>)ViewBag.LstSitio, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Sitio_Destino), "SELECCIONE", new { @class = "form-control input-sm text-uppercase", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Pago" class="control-label col-md-3 input-sm">Tipo de Pago:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Tipo_Pago, new SelectList((List<Tb_Maestras>)ViewBag.LstPago, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Pago), "SELECCIONE", new { @class = "form-control input-sm text-uppercase", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Observacion" class="control-label col-md-1 input-sm" style="width:12.3%;">Observación:</label>
+            <div class="col-md-8" style="width:87.7%;">
+                @Html.TextAreaFor(m => m.Observacion, new { @class = "form-control input-sm noresize input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-md-6">
+
+    </div>
+    <div class="col-md-6 text-right" id="DivBotonera">
+        <button type="button" id="btnAnular" class="btn btn-primary btn-sm">Anular Comprobante</button>
+    </div>
+</div>
+<hr />
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Código</th>
+            <th class="col-lg-7 text-center">Descripción</th>
+            <th class="col-lg-1 text-center">Precio</th>
+            <th class="col-lg-1 text-center">Cantidad</th>
+            <th class="col-lg-1 text-center">Importe</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Detalle != null && Model.Detalle.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model.Detalle)
+            {
+                Count++;
+                <tr>
+                    <td>@item.Codigo_Servicio</td>
+                    <td>@item.Descripcion</td>
+                    <td class="text-right">@item.Precio.ToString("0.00")</td>
+                    <td class="text-right">@item.Cantidad.ToString("0.00")</td>
+                    <td class="text-right">@item.Monto.ToString("0.00")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

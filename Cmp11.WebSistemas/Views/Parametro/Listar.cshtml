@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Cmp02.Entities.Tb_Parametro>
+
+<script>
+    function fnEliminar(a) { FullMsg.Confirm("¿Seguro de eliminar el Parámetro?", function (b) { b && $.get(FullPathSrv + "Parametro/Eliminar", { vId: a }, function (a) { $("#frmParametro").submit() }) }) } function fnEditar(a) { $.get(FullPathSrv + "Parametro/Editar", { vId: a }, function (a) { modal = FullMsg.Modal({ title: "Datos del Parámetro", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return fnValidarParametro(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) } function fnValidarParametro() { 0 == $("#Valor_Texto").val().length && 0 == $("#Valor_Numerico").val().length ? FullMsg.Alert("Debe Registrar un valor al parámetro") : $("#Valor_Texto").val().length > 0 && $("#Valor_Numerico").val().length > 0 ? FullMsg.Alert("Solo debe Registrar un valor al parámetro") : $("#frmEditarParametro").submit() } $(document).ready(function () { $("#btnLimpiar").on("click", function () { $("#vValor").val(""), $("#frmParametro").submit() }), $("#btnAgregar").on("click", function () { fnEditar(0) }) });
+
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Parametro", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmParametro" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-3 input-sm">Por Descripción Parámetro:</label>
+                                <div class="col-md-9">
+                                    @Html.TextBox("vValor", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese descripcion del parámetro", @maxlength = "150" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                <button type="button" id="btnLimpiar" class="btn btn-default btn-sm">Limpiar</button>
+                                <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

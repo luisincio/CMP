@@ -1,0 +1,234 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Comprobantecabecera
+
+<script>
+    $(document).ready(function ()
+    {
+        if ("@Model.Id_Comprobante" != 0) {
+            $("#frmCabecera").find("#Id_Comprobante").val("@Model.Id_Comprobante");
+            $("#frmDetalle").find("#vId").val("@Model.Id_Comprobante");
+            $("#Monto, #LblMonto").val("@Model.Monto")
+            $("#Igv, #LblIgv").val("@Model.Igv")
+            $("#Descuento, #LblDescuento").val("@Model.Descuento")
+            $("#Total, #LblTotal").val("@Model.Total")
+        }
+
+        $("#frmCabecera").find("#btnGrabar").on("click", function ()
+        {
+            FullMsg.Confirm("¿Seguro de grabar el recibo?", function (a)
+            {
+                $("#Monto").val($("#lblMonto").val());
+                $("#Igv").val($("#lblIgv").val());
+                $("#Descuento").val($("#lblDescuento").val());
+                $("#Total").val($("#lblTotal").val());
+                a && ($("#Id_Sitio_Origen").val(parseInt($("#Id_Sitio_Origen").val()) > 0 ? $("#Id_Sitio_Origen").val() : $("#Id_Sitio_Destino").val()), ($("#Opcional").val($("#Serie option:selected").text()), $("#frmCabecera").submit()))
+            })
+        }),
+        $("#btnConcepto").on("click", function () {
+            $.get(FullPathSrv + "Servicios/ServiciosRecibo", function (a) { modal = FullMsg.Modal({ title: "Agregar Servicio", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return Aceptar(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") })
+        }),
+
+
+        //$("#btnBuscarRuc").on("click", function () { $.get(FullPathSrv + "Comprobante/ObtenerEmpresa", { vRuc: $("#RUC").val() }, function (a) { $("#Razonsocial").val(a.Razon_Social), $("#Direccion").val(a.Direccion_Completa), $("#Id_Clientepagador").val(a.Id_Persona) }) }), $("#btnBuscarDNI").on("click", function () { $.get(FullPathSrv + "Comprobante/ObtenerCliente", { vDni: $("#DNI").val() }, function (a) { $("#Colegiatura").val(a.Colegiado), $("#Apellidos_Colegiado").val(a.Apellido_Paterno + " " + a.Apellido_Materno), $("#Nombres_Colegiado").val(a.Nombres), $("#Id_Colegiado").val(a.Id_Persona) }) })
+        $("#btnBuscarRuc").on("click", function () { $.get(FullPathSrv + "Comprobante/Listar_Empresa", function (a) { modal = FullMsg.Modal({ title: "Buscar Empresa", message: a, buttons: [{ label: "Aceptar", className: "btn-primary", callback: function () { return modal.modal("hide"), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") }) });
+
+
+        $("#btnFecha").click(function () { $("#Fecha").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha").datepicker("show") });
+        $("#btnFechaVencimiento").click(function () { $("#Fecha_Vencimiento").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown" }), $("#Fecha_Vencimiento").datepicker("show") });
+
+        if ("@Model.Fecha.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha").val("@Variables.Hoy.ToString("dd/MM/yyyy")") }
+        if ("@Model.Fecha_Vencimiento.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Vencimiento").val("@Variables.Hoy.ToString("dd/MM/yyyy")") }
+
+        $("#Serie").change(function () {
+            $("#Nro_Documento").val("");
+            $.getJSON(FullPathSrv + "Comprobante/TraerNumero?vTipoDocumento=@Convert.ToInt32(EnumTipoDocSunat.RECIBO)&vSerie=" + $("#Serie").val(), function (data) {
+                $("#Nro_Documento").val(data);
+            });
+        });
+
+        $("#Serie").change();
+
+    });
+
+    function fnProcesar() {
+        fnWindowPopup("@Url.Action("ImprimirRecibo", "Reportes", new { vId = Model.Id_Comprobante })", "Fullsito", "620", "800");
+    }
+
+    function Felpa2() {
+        modal.modal("hide");
+        $.get(FullPathSrv + "Cliente/Registro2", function (a) { modal2 = FullMsg.Modal({ title: "Registrar Cliente", message: a, buttons: [{ label: "Aceptar", className: "btn-primary", callback: function () { return Registrar(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal2.modal("hide") } }] }), modal2.modal("show") })
+    }
+</script>
+
+@Html.HiddenFor(m => m.Id_Clientepagador)
+@Html.HiddenFor(m => m.Id_Colegiado)
+@Html.HiddenFor(m => m.Id_Sitio_Origen)
+@Html.HiddenFor(m => m.Nrodocumento_Gp)
+@Html.HiddenFor(m => m.Id_Comprobante)
+@Html.HiddenFor(m => m.Id_EstadoComprobante)
+@Html.HiddenFor(m => m.Monto)
+@Html.HiddenFor(m => m.Igv)
+@Html.HiddenFor(m => m.Descuento)
+@Html.HiddenFor(m => m.Total)
+@Html.HiddenFor(m => m.Opcional)
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Documento" class="control-label col-md-3 input-sm">Nro Documento:</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.Serie, new SelectList((List<Tb_Correlativos>)ViewBag.LstSerie, "Serie", "Id_Documento_GP", Model.Serie), new { @class = "form-control input-sm text-uppercase" })
+            </div>
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.Nro_Documento, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Sitio_Destino" class="control-label col-md-3 input-sm">Sitio:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Sitio_Destino, new SelectList((List<Tb_Maestras>)ViewBag.LstSitio, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Sitio_Destino), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="RUC" class="control-label col-md-3 input-sm">Entidad Pagadora:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.RUC, new { @class = "form-control input-sm text-uppercase", @maxlength = "11", @readonly = "readonly" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarRuc" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Razonsocial" class="control-label col-md-3 input-sm">Razon Social:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Razonsocial, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="DNI" class="control-label col-md-1 input-sm" style="width:12.1%;">Dirección:</label>
+            <div class="col-md-10" style="width: 87.9%;">
+                @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control input-sm text-uppercase", @maxlength = "250", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Moneda" class="control-label col-md-3 input-sm">Condición de Pago:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_CondicionPago, new SelectList((List<Tb_Maestras>)ViewBag.LstCondicionPago, "VALOR1", "DESCRIPCION", Model.Id_CondicionPago), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo_Pago" class="control-label col-md-3 input-sm">Forma de Pago:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Tipo_Pago, new SelectList((List<Tb_Maestras>)ViewBag.LstPago, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo_Pago), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Moneda" class="control-label col-md-3 input-sm">Moneda:</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.Id_Moneda, new SelectList((List<Tb_Maestras>)ViewBag.LstMoneda, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Moneda), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Cheque" class="control-label col-md-3 input-sm">N° de Comprobante:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Nro_Cheque, new { @class = "form-control input-sm text-uppercase", @maxlength = "30" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha" class="control-label col-md-3 input-sm">Fecha Recibo:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFecha" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Vencimiento" class="control-label col-md-3 input-sm">Fecha Vence:</label>
+            <div class="col-md-9">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Vencimiento, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaVencimiento" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Observacion" class="control-label col-md-1 input-sm" style="width:12.1%;">Observación:</label>
+            <div class="col-md-8" style="width:87.9%;">
+                @Html.TextAreaFor(m => m.Observacion, new { @class = "form-control input-sm noresize input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-md-6">
+    </div>
+    <div class="col-md-6 text-right" id="DivBotonera">
+        <button type="button" id="btnGrabar" class="btn btn-primary btn-sm">Grabar Recibo</button>
+        @if (Model.Id_Comprobante != 0)
+        {
+            <button type="button" id="btnConcepto" class="btn btn-primary btn-sm">Agregar Detalle</button>
+            if (Model.Detalle != null && Model.Detalle.Any())
+            {
+                <button type="button" id="btnFicha" class="btn btn-info btn-sm" onclick="fnWindowPopup('@Url.Action("ImprimirRecibo", "Reportes", new { vId = Model.Id_Comprobante })', 'Fullsito', '800', '620')">Procesar</button>
+                @*<button type="button" id="btnProcesar" class="btn btn-info btn-sm" onclick="fnProcesar()">Procesar</button>*@
+            }
+        }
+    </div>
+</div>

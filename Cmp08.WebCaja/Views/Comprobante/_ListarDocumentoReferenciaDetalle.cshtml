@@ -1,0 +1,54 @@
+﻿@using Cmp02.Entities;
+@model IEnumerable<Tb_Comprobantecabecera>
+<script>
+    $(document).ready(function () {
+        $('input[name="rdoSelect"]').click(function ()
+        {
+            
+            $('input[name="referencia"]').val($(this).val());
+            $('input[name="id_referencia"]').val($(this).attr("fielIdComprabante"));
+            //$('#referencia').attr('value',$(this).val());
+            
+            
+        })
+    });
+</script>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-0 text-center">Item</th>
+            <th class="col-lg-0 text-center">Documento</th>
+            <th class="col-lg-4 text-center">SubTotal</th>
+            <th class="col-lg-0 text-center">IGV</th>
+            <th class="col-lg-1 text-center">Total</th>
+            <th class="col-lg-0 text-center">A</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td class="text-center">@Count</td>
+                    <td>@item.Nrodocumento_Gp</td>
+                    <td>@item.Monto</td>
+                    <td>@item.Igv</td>
+                    <td>@item.Total</td>
+                    <td align="center">
+                        @Html.RadioButton("rdoSelect", item.Nrodocumento_Gp, new { fielIdComprabante=item.Id_Comprobante })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

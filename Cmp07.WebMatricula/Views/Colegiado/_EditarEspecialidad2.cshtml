@@ -1,0 +1,291 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model Tb_Colegiado_Especialidad
+<script>
+    $(document).ready(function () {
+        $("#btnFechaRegistro").click(function ()
+        {
+            $("#Fecha_Registro").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha_Registro").datepicker("show")
+        });
+        if ("@Model.Fecha_Registro.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Registro").val("@Variables.Hoy.ToShortDateString()") }
+        
+        $("#btnFechaCaducidad").click(function () {
+            $("#Fecha_Caducidad").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.AddYears(6).ToShortDateString()" }), $("#Fecha_Caducidad").datepicker("show")
+        });
+
+        $("#Id_Tipo").change(function ()
+        {
+            if ($(this).val() != "")
+            {
+                $.getJSON(FullPathSrv + "Colegiado/Nro_Especialidad", { vId_TipoEspecialidad: $("#Id_Tipo").val() }, function (e) {
+                    $("#Nro_Especialidad").val(e);
+                })
+
+                if ($(this).val() == "@Convert.ToInt32(EnumTipoEspecialidad.DIPLOMATURA)") 
+                {
+                    $("#Id_Origen_Especialidad").val("@Variables.Peru");
+                }
+            }
+        })
+        if ("@Model.Fecha_Caducidad.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Caducidad").val("@Variables.Hoy.AddYears(5).ToShortDateString()") } $("#btnFechaResolucion").click(function () { $("#Fecha_Resolucion").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha_Resolucion").datepicker("show") }); if ("@Model.Fecha_Resolucion.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Resolucion").val("@Variables.Hoy.ToShortDateString()") } $("#btnFechaEspecialidad").click(function () { $("#Fecha_Especialidad").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#Fecha_Especialidad").datepicker("show") }); if ("@Model.Fecha_Especialidad.ToString("dd/MM/yyyy")" == "01/01/0001") { $("#Fecha_Especialidad").val("@Variables.Hoy.ToShortDateString()") }
+        $("#Id_Origen_Especialidad").change(function ()
+        {
+            $("#Universidad_Especialidad").val("");
+            $("#Entidad_Acreditada_Esp").val("");
+            $("#DivEntidad_AcreditadaModal").hide();
+            if ($("#Id_Origen_Especialidad").val().toString() == "@Variables.Peru")
+            {
+                $("#Id_Situacion_Especialidad").val(@Convert.ToInt32( EnumSituacionEstudio.EXPEDIDO));
+                $("#Id_Situacion_Especialidad").change();
+            }
+            else if ($("#Id_Origen_Especialidad").val().toString() != "")
+            {
+                $("#Id_Situacion_Especialidad").val(@Convert.ToInt32( EnumSituacionEstudio.RECONOCIDO));
+                $("#Id_Situacion_Especialidad").change();
+                $("#DivEntidad_AcreditadaModal").show();
+                $("#Entidad_Acreditada_Esp").val("@Variables.EntidadAcreditada");
+            }
+
+        });
+
+        $("#Universidad_Especialidad").autocomplete({ source: function (request, response) { $.getJSON(FullPathSrv + "Colegiado/ListarUniversidad", { vOrigen: $("#Id_Origen_Especialidad").val(), vValor: $("#Universidad_Especialidad").val() }, response) }, minLength: 3, select: function (a, b) { $("#Id_Universidad").val(b.item.id) } }); $("#Id_Tipo").change(function () { $("#DivReCertificado").hide(); if ($("#Id_Tipo").val() == "@Convert.ToInt32(EnumTipoEspecialidad.ESPECIALIDAD)") { $("#DivReCertificado").show() } $("#Especialidad").val("") }); $("#Especialidad").autocomplete({ source: function (request, response) { $.getJSON(FullPathSrv + "Colegiado/ListarEspecialidad", { vTipo: $("#Id_Tipo").val(), vValor: $("#Especialidad").val() }, response) }, minLength: 3, select: function (a, b) { $("#Id_EspecialidadOpc").val(b.item.id) } }); if (parseInt("@Model.Id_Especialidad") == 0) $("#Id_Tipo").change()
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nro_Especialidad" class="control-label col-md-4 input-sm">Número:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nro_Especialidad, new { @class = "form-control input-sm text-uppercase", @maxlength = "20", @readonly="readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Tipo" class="control-label col-md-4 input-sm">Tipo:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Tipo, new SelectList((List<Tb_Maestras>)ViewBag.LstTipoEspecialidad, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Tipo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Especialidad" class="control-label col-md-4 input-sm">Descripción:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Especialidad, new { @class = "form-control input-sm text-uppercase", @maxlength = "200" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Origen_Especialidad" class="control-label col-md-4 input-sm">Origen:</label>
+            <div class="col-md-8">
+                @*@Html.DropDownListFor(m => m.Id_Origen_Especialidad, new SelectList((List<Tb_Maestras>)ViewBag.LstOrigen, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Origen_Especialidad), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })*@
+                @Html.DropDownListFor(m => m.Id_Origen_Especialidad, new SelectList((List<Tb_Pais>)ViewBag.LstPais, "ID_PAIS", "DESCRIPCION", Model.Id_Origen_Especialidad), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Universidad_Especialidad" class="control-label col-md-4 input-sm">Universidad:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Universidad_Especialidad, new { @class = "form-control input-sm text-uppercase", @maxlength = "150" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Id_Origen_Especialidad != Variables.Peru && Model.Id_Origen_Especialidad != 0)
+{
+<div class="row" id="DivEntidad_AcreditadaModal">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Entidad_Acreditada" class="control-label col-md-4 input-sm">Entidad Acreditada:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Entidad_Acreditada_Esp, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>    
+}
+else
+{
+<div class="row" id="DivEntidad_AcreditadaModal" hidden="hidden">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Entidad_Acreditada" class="control-label col-md-4 input-sm">Entidad Acreditada:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Entidad_Acreditada_Esp, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Situacion_Especialidad" class="control-label col-md-4 input-sm">Situación:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Situacion_Especialidad, new SelectList((List<Tb_Maestras>)ViewBag.LstSituacion, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Situacion_Especialidad), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Registro" class="control-label col-md-4 input-sm">Fecha Registro:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Registro, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaRegistro" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Resolucion" class="control-label col-md-4 input-sm">Resolución:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Resolucion, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Resolucion" class="control-label col-md-4 input-sm">Fecha Resolución:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Resolucion, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaResolucion" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha_Especialidad" class="control-label col-md-4 input-sm">Fecha de Título:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.Fecha_Especialidad, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaEspecialidad" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Cons_Reg_Tramite" class="control-label col-md-4 input-sm">Cons. Reg. Trámite:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Cons_Reg_Tramite, new SelectList((List<Tb_Maestras>)ViewBag.LstTramite, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Cons_Reg_Tramite), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+@if (Model.Id_Tipo == (int)EnumTipoEspecialidad.ESPECIALIDAD)
+{
+    <div class="row" id="DivReCertificado">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Fecha_Caducidad" class="control-label col-md-4 input-sm">Fec. Recertificación:</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Fecha_Caducidad, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                        <span class="input-group-btn">
+                            <button type="button" id="btnFechaCaducidad" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Flg_Recertificado" class="control-label col-md-4 input-sm">ReCertificado:</label>
+                <div class="col-md-8">
+                    @if (Model.Flg_Recertificado == "1")
+                    {
+                        <select class="form-control input-sm text-uppercase" name="Flg_Recertificado">
+                            <option selected value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select class="form-control input-sm text-uppercase" name="Flg_Recertificado">
+                            <option value="1">SI</option>
+                            <option selected value="0">NO</option>
+                        </select>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row" id="DivReCertificado" hidden="hidden">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Fecha_Caducidad" class="control-label col-md-4 input-sm">Fec. Recertificación:</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.Fecha_Caducidad, "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                        <span class="input-group-btn">
+                            <button type="button" id="btnFechaCaducidad" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Flg_Recertificado" class="control-label col-md-4 input-sm">ReCertificado:</label>
+                <div class="col-md-8">
+                    @if (Model.Flg_Recertificado == "1")
+                    {
+                        <select class="form-control input-sm text-uppercase" name="Flg_Recertificado">
+                            <option selected value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select class="form-control input-sm text-uppercase" name="Flg_Recertificado">
+                            <option value="1">SI</option>
+                            <option selected value="0">NO</option>
+                        </select>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Id_Especialidad)
+@Html.HiddenFor(m => m.Opcional)

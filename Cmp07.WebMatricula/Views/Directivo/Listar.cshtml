@@ -1,0 +1,83 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Persona_Directivo>
+
+<script>
+    function fnEliminar(a)
+    {
+        FullMsg.Confirm("¿Seguro de eliminar el usuario?", function (b) { b && $.get(FullPathSrv + "Directivo/Eliminar", { vId: a }, function (a) { $("#frmUsuario").submit() }) })
+    }
+    function fnEditar(a)
+    {
+        $.get(FullPathSrv + "Directivo/Editar", { vId: a }, function (a) { modal = FullMsg.Modal({ title: "Datos del Directivo", message: a, buttons: [{ label: "Guardar", className: "btn-primary", callback: function () { return $("#frmEditarUsuario").submit(), !1 } }, { label: "Cancelar", className: "btn-default", callback: function () { modal.modal("hide") } }] }), modal.modal("show") })
+    }
+    $(document).ready(function ()
+    {
+        $("#btnLimpiar").on("click", function () { $("#vValor").val(""), $("#frmUsuario").submit() }),
+        $("#btnAgregar").on("click", function () { fnEditar(0) })
+    });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("Listar", "Directivo", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmUsuario" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vPeriodo" class="control-label col-md-4 input-sm">Por Periodo:</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("vPeriodo", new SelectList((List<Tb_Maestras>)ViewBag.LstPeriodo, "DESCRIPCION", "DESCRIPCION"), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vConsejo" class="control-label col-md-4 input-sm">Por Consejo:</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("vConsejo", new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", AppSession.Usuario.Id_Consejo_Regional), "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                                <button type="button" id="btnLimpiar" class="btn btn-default btn-sm">Limpiar</button>
+                                <button type="button" id="btnAgregar" class="btn btn-default btn-sm">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_Detalle", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

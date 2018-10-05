@@ -1,0 +1,18 @@
+﻿@model Cmp02.Entities.Tb_Parametro
+
+@using (Ajax.BeginForm("Editar", "Parametro", new AjaxOptions { UpdateTargetId = "divParametro", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarParametro" }))
+{
+    <div id="divParametro">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmParametro").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarParametro2", Model)
+        }
+    </div>
+}

@@ -1,0 +1,53 @@
+﻿@using Cmp01.Utilities;
+
+<script>
+    $(document).ready(function ()
+    {
+        $("#btnFechaModal").click(function () { $("#FechaModal").datepicker({ dateFormat: "dd/mm/yy", constrainInput: !0, showButtonPanel: !0, autoSize: !0, showAnim: "slideDown", maxDate: "@Variables.Hoy.ToShortDateString()" }), $("#FechaModal").datepicker("show") });
+        $("#FechaModal").val("@Variables.Hoy.ToString("dd/MM/yyyy")");
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Chequera" class="control-label col-md-4 input-sm">Chequera:</label>
+            <div class="col-md-8">
+                @Html.DropDownList("Chequera", new SelectList((List<Cmp02.Entities.Tb_Maestras>)ViewBag.LstDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NroDocumentoBanco" class="control-label col-md-4 input-sm">Nro. Documento:</label>
+            <div class="col-md-8">
+                @Html.TextBox("NroDocumentoBanco", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fecha" class="control-label col-md-4 input-sm">Fecha:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("FechaModal", "", "{0:dd/MM/yyyy}", new { @class = "form-control input-sm text-uppercase", @maxlength = "10" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnFechaModal" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="NumeroPago" class="control-label col-md-4 input-sm">Nro. de Pago:</label>
+            <div class="col-md-8">
+                @Html.TextBox("NumeroPago", "", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>

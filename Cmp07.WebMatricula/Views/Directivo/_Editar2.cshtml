@@ -1,0 +1,125 @@
+﻿@using Cmp02.Entities
+@model Tb_Persona_Directivo
+
+<script>
+    $(document).ready(function ()
+    {
+        $("#btnBuscarUsuario").on("click", function ()
+        {
+            $.post(FullPathSrv + "Directivo/BuscarMedico", { vNumero: $("#Numero").val() }, function (a)
+            {
+                $("#Apellido_Paterno").val(a.Apellido_Paterno),
+                $("#Apellido_Materno").val(a.Apellido_Materno),
+                $("#Nombres").val(a.Nombres),
+                $("#Id_Persona").val(a.Id_Persona)
+                $("#Colegiado").val(a.Colegiado)
+                $("#Id_Tipo_Documento").val(a.Id_Tipo_Documento)
+                $("#Nro_Documento").val(a.Nro_Documento)
+                $("#Id_Estado").val(a.Id_Estado_Actual)
+                $("#Estado").val(a.Estado_Actual)
+                $("#Id_Consejo").val(a.IdConsejo_Actual.toString())
+                
+                
+                //$("#Nombre_Completo").val(a.Apellido_Paterno + " " + a.Apellido_Materno + ", " + a.Nombres), $("#Id_Usuario").val(a.Id_Persona)
+            })
+        })
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Numero" class="control-label col-md-4 input-sm">DNI o CMP:</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("Numero", Model.Nro_Documento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+                    <span class="input-group-btn">
+                        <button type="button" id="btnBuscarUsuario" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Consejo_Regional" class="control-label col-md-4 input-sm">Consejo Regional:</label>
+            <div class="col-md-8">
+                @if (Model.Id_Consejo == 0)
+                {
+                    @Html.DropDownListFor(m => m.Id_Consejo, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", AppSession.Usuario.Id_Consejo_Regional), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                }
+                else
+                {
+                    @Html.DropDownListFor(m => m.Id_Consejo, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Consejo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Apellido_Paterno" class="control-label col-md-4 input-sm">Apellido Paterno:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Apellido_Paterno, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Apellido_Materno" class="control-label col-md-4 input-sm">Apellido Materno:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Apellido_Materno, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nombres" class="control-label col-md-4 input-sm">Nombres:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Nombres, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Estado" class="control-label col-md-4 input-sm">Estado:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Estado, new { @class = "form-control input-sm text-uppercase", @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Id_Cargo" class="control-label col-md-4 input-sm">Cargo:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Id_Cargo, new SelectList((List<Tb_Maestras>)ViewBag.LstCargos, "ID_MAESTRAS", "DESCRIPCION", Model.Id_Consejo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Periodo" class="control-label col-md-4 input-sm">Periodo:</label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Periodo, new SelectList((List<Tb_Maestras>)ViewBag.LstPeriodo, "DESCRIPCION", "DESCRIPCION", Model.Periodo), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Colegiado)
+@Html.HiddenFor(m => m.Id_Tipo_Documento)
+@Html.HiddenFor(m => m.Nro_Documento)
+@Html.HiddenFor(m => m.Id_Estado)
+@Html.HiddenFor(m => m.Id_Directivo)
+@Html.HiddenFor(m => m.Id_Persona)
+@Html.HiddenFor(m => m.Opcional)

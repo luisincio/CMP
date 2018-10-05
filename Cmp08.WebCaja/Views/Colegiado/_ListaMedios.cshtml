@@ -1,0 +1,22 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model ColegiadoMicro
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Nombre_Medio_Contacto" class="control-label col-md-3 input-sm">Celular:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control input-sm text-uppercase", @maxlength = "9" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="TipoMedio_Desripcion" class="control-label col-md-3 input-sm">Correo:</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control input-sm text-uppercase", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+</div>

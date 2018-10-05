@@ -1,0 +1,84 @@
+﻿@using Cmp02.Entities;
+@model Tb_Correlativos
+
+<script>
+    $(document).ready(function ()
+    {
+        if ("@Model.Opcional" == "OK")
+        {
+            modal.modal("hide");
+            $("#frmParametro").submit();
+        }
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Id_Sucursal" class="control-label col-md-2 input-sm" style="width:16.1%!important">Consejo:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.DropDownListFor(m => m.Id_Sucursal, new SelectList((List<Tb_Maestras>)ViewBag.LstConsejo, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Id_Sucursal" class="control-label col-md-2 input-sm" style="width:16.1%!important">Tipo de Documento:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.DropDownListFor(m => m.Id_Tidodocumento, new SelectList((List<Tb_Maestras>)ViewBag.LstTipoDocumento, "ID_MAESTRAS", "DESCRIPCION"), "SELECCIONE", new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="Serie" class="control-label col-md-2 input-sm" style="width:16.1%!important">Serie:</label>
+            <div class="col-md-10" style="width: 83.9%!important">
+                @Html.TextBoxFor(m => m.Serie, new { @class = "form-control input-sm text-uppercase", @maxlength = "100" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Inicio" class="control-label col-md-4 input-sm">Valor Numérico:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Inicio, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Fin" class="control-label col-md-4 input-sm">Valor Numérico:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Fin, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="Inicio" class="control-label col-md-4 input-sm">Documento GP:</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Id_Documento_GP, new { @class = "form-control input-sm text-uppercase" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*<div class="form-group">
+                <label for="Fin" class="control-label col-md-4 input-sm">Valor Numérico:</label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(m => m.Fin, new { @class = "form-control input-sm text-uppercase" })
+                </div>
+            </div>*@
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Opcional)
+@Html.HiddenFor(m => m.Accion)
+

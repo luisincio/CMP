@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    @*<meta charset="utf-8" />*@
+    @*<meta name="viewport" content="width=device-width, initial-scale=1.0">*@
+    @*<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=EDGE" />*@
+    <meta http-equiv="X-UA-Compatible" content="IE=11" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colegio Médico del Perú</title>
+    @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+        <a href="~/Views/Shared/_Layout.cshtml">~/Views/Shared/_Layout.cshtml</a>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @{
+        string vPath = (Context.IsDebuggingEnabled) ? "/" : Url.Content("~//");
+        List<Cmp02.Entities.Tb_Permiso> Model = (List<Cmp02.Entities.Tb_Permiso>)Session["Menu"];
+    }
+    <script>
+        var FullPathSrv = "@vPath";
+        $(document).ready(function () {
+            var url = window.location;
+            $('ul.nav a[href="' + url + '"]').parent().addClass('active');
+            $('ul.nav a').filter(function () {
+                return this.href == url;
+            }).parent().addClass('active');
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <div style="float:left">
+                    <a href="@Url.Action("Index","Home")">
+                        <img src="~/Content/img/Logo.png" width="60" height="55" />
+                    </a>
+                </div>
+                <div style="font-size: 26px; font-family: Calibri,sans-serif; color: #ffffff; margin-top: 10px; margin-left: 70px;">Colegio Médico del Perú </div>
+            </div>
+            <div class="navbar-collapse collapse" style="margin-top:5px">
+                @Html.Partial("_LoginPartial")
+            </div>
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav" style="height:40px">
+                        @if (Model != null && Model.Any())
+                        {
+                            bool Flat = true;
+                            foreach (var item in Model)
+                            {
+                                string FullRuta = vPath + item.Controladora + "/" + item.Accion.ToString();
+                                <li><a href="@FullRuta.ToLower()" style="padding-left:10px;padding-right:10px;">@item.Etiqueta</a></li>
+                                @*<li>@Html.ActionLink(item.Etiqueta, item.Accion.ToString(), vPath + item.Controladora, new { style = "padding-left:10px;padding-right:10px;" })</li>*@
+                            }
+                        }
+                        @*<li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Reporte <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Arqueo de Caja</a></li>
+                <li><a href="#">Cobranza y Concepto</a></li>
+                <li><a href="#">Cobranza y Fondo</a></li>
+            </ul>
+        </li>*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" style="margin-top:90px; padding-top:10px; box-shadow: 0px 0px 10px 0px rgba(53, 50, 50, 0.55); background-color:#F2EFFB">
+        @RenderBody()
+    </div>
+    <hr style="margin-bottom:10px!important" />
+    <footer>
+        <p class="text-center" style="margin:0px!important">
+            <b>
+                Copyright © @DateTime.Now.Year Colegio Médico del Perú - Consejo Nacional <br />
+                Malecón de la Reserva 791 Miraflores Lima 18 Telf: 213-1400 Fax: 213-1412&nbsp;·&nbsp;Perú
+            </b>
+        </p>
+    </footer>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

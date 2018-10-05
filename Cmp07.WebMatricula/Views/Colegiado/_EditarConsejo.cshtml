@@ -1,0 +1,19 @@
+﻿@using Cmp02.Entities;
+@model Tb_Colegiado_Consejo
+
+@using (Ajax.BeginForm("Consejo", "Cliente", new AjaxOptions { UpdateTargetId = "divMedioContacto", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmEditarConsejo" }))
+{
+    <div id="divMedioContacto">
+        @if (Model.Opcional == "OK")
+        {
+            <script>
+                modal.modal("hide");
+                $("#frmConsejo").submit();
+            </script>
+        }
+        else
+        {
+            @Html.Partial("_EditarConsejo2", Model)   
+        }
+    </div>
+}

@@ -1,0 +1,54 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Maestras>
+<script>
+    $(document).ready(function () {
+        $('input[name="rdoSelect"]').click(function ()
+        {
+            //$("#IdProveedor").val($(this).val().substring(0, $(this).val().indexOf("-"))),
+            //$("#Proveedor").val($(this).val().substring($(this).val().indexOf("-") + 1, $(this).val().length))
+            var datosProveedor = $(this).val().split("-");
+
+            $("#IdProveedor").val(datosProveedor[0]);
+            $("#Proveedor").val(datosProveedor[1]);
+            $("#Direccion").val(datosProveedor[2]);
+
+        })
+    });
+</script>
+
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Item</th>
+            <th class="col-lg-2 text-center">Código</th>
+            <th class="col-lg-8 text-center">Proveedor</th>
+            <th class="col-lg-1 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    @*<td class="text-center">@Count</td>*@
+                    <td>@item.Id_Maestras</td>
+                    <td>@item.Valor1</td>
+                    <td>@item.Descripcion</td>
+                    <td align="center">
+                        @Html.RadioButton("rdoSelect", item.Valor1+"-"+item.Descripcion+"-"+item.Valor2)
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

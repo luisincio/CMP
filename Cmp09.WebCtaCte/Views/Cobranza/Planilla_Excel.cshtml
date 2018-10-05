@@ -1,0 +1,166 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Tb_Temporal_Planilla>
+
+<script>
+    $(document).ready(function () {
+        $("#btnBuscarDocumento").on("click", function () {
+            $.get(FullPathSrv + "Cobranza/ObtenerRecibo", { vRecibo: $("#Nro_Documento").val() }, function (a) {
+                $("#Aux").val(parseInt(a.Id_Clientepagador));
+                $("#vTotal").val(a.Total.toFixed(2));
+                $("#Id_Consejo").val(a.Id_Sitio_Destino).trigger("change");
+
+                //$("#Id_Consejo").val(a.Id_Sitio_Destino),
+                //$("#Id_Consejo").change(),
+                //$("#Id_Entidad").val(a.Id_Clientepagador),
+                //$("#vTotal").val(a.Total.toFixed(2));
+            })
+        })
+
+        $("#Id_Consejo").change(function () {
+            var a = $("#Id_Entidad");
+            a.empty(),
+            "" != $("select#Id_Consejo").val() && $.ajax({
+                url: FullPathSrv + "Cobranza/ListarEntidad", type: "POST", data: { vConsejo: $("select#Id_Consejo").val() },
+                success: function (b) { $.each(b, function (b, c) { $("<option>", { value: c.id }).html(c.label).appendTo(a) }), a.val($("#Aux").val()) }
+            })
+        })
+
+        $("#btnConsultar").on("click", function () {
+            $("#vIdConsejo").val($("#frmLoadData").find("#Id_Consejo").val());
+            $("#vIdEntidad").val($("#frmLoadData").find("#Id_Entidad").val());
+            $("#vDocumento").val($("#frmLoadData").find("#Nro_Documento").val());
+            $("#frmPlanilla").submit();
+        })
+
+        $("#btnCargar").on("click", function () {
+
+            FullMsg.Confirm("¿Seguro de procesar la planilla, esto puede demorar según la cantidad de registros que tiene el archivo?", function (a) {
+                if (a) {
+                    $("#vFullOperacion").val(0);
+                    $("#frmLoadData").submit();
+                }
+            })
+        })
+        $("#btnPagar").on("click", function ()
+        {
+            0 == $("#Nro_Documento").val().trim().length ?
+            FullMsg.Alert("Debe ingresar un número de recibo y realizar la búsqueda") :
+            "" == $("#Id_Consejo").val() ?
+            FullMsg.Alert("Debe seleccionar un consejo") :
+            "" == $("#Id_Entidad").val() ?
+            FullMsg.Alert("Debe seleccionar una entidad pagadora") :
+            FullMsg.Confirm("¿Seguro de procesar los pagos de planilla?", function (a)
+            {
+                if (a)
+                {
+                    $.get(FullPathSrv + "Cobranza/Procesar_Planilla", { vDocumento: $("#Nro_Documento").val(), vIdConsejo: $("#Id_Consejo").val(), vIdEntidad: $("#Id_Entidad").val() }, function (a) {
+                        1 == a ? FullMsg.Alert("Se proceso con exito!") : FullMsg.Alert("Ocurrio un error al asociar el doctor a la entidad")
+                    })
+                }
+            })
+        })
+    });
+</script>
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        @using (Html.BeginForm("Planilla_Excel", "Cobranza", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmLoadData" }))
+        {
+            @Html.AntiForgeryToken();
+            @Html.ValidationSummary();
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Nro_Documento" class="control-label col-md-3 input-sm">Nro. Documento:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        @Html.TextBox("Nro_Documento", (string)ViewBag.Documento, new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btnBuscarDocumento" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Id_Consejo" class="control-label col-md-3 input-sm">Por Consejo:</label>
+                                <div class="col-md-9">
+                                    @Html.DropDownList("Id_Consejo", (SelectList)ViewBag.LstConsejo, "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Id_Entidad" class="control-label col-md-3 input-sm">Por Entidad:</label>
+                                <div class="col-md-9">
+                                    @if (ViewBag.LstEntidad == null)
+                                    {
+                                        <select name="Id_Entidad" id="Id_Entidad" class="form-control input-sm text-uppercase"></select>
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownList("Id_Entidad", (SelectList)ViewBag.LstEntidad, "TODOS", new { @class = "form-control input-sm text-uppercase" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vTotal" class="control-label col-md-3 input-sm">Por Total:</label>
+                                <div class="col-md-9">
+                                    @Html.TextBox("vTotal", "0.00", new { @class = "form-control input-sm text-uppercase", @maxlength = "20" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="file" class="form-control" name="uploadfile" id="uploadfile" />
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="button" id="btnConsultar" class="btn btn-default btn-sm">Consultar</button>
+                            <button type="button" id="btnCargar" class="btn btn-default btn-sm">Cargar Archivo</button>
+                            <button type="button" id="btnPagar" class="btn btn-primary btn-sm">Ejecutar Pago</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="panel panel-default">
+        @using (Ajax.BeginForm("Planilla_Excel", "Cobranza", new AjaxOptions { UpdateTargetId = "divFullData", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmPlanilla" }))
+        {
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divFullData" class="panel-body">
+                    @Html.Partial("_DetalleExcel", Model)
+                </div>
+            </div>
+            @Html.Hidden("Pagina", 0);
+            @Html.Hidden("Aux", "")
+        }
+    </div>
+
+</div>

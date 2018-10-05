@@ -1,0 +1,68 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<Oc_Transaccion>
+<script>
+    $(document).ready(function () {
+        fnDataCalculate();
+    })
+</script>
+<table class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB;" id="FullTbl">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">O/C</th>
+            <th class="hidden">Ord</th>
+            <th class="hidden">Itemnmbr</th>
+            <th class="col-lg-5 text-center">Artículo</th>
+            <th class="col-lg-1 text-center">U.M.</th>
+            <th class="hidden">Locncode</th>
+            <th class="col-lg-1 text-center">Cant. Ped.</th>
+            <th class="col-lg-1 text-center">Cant. Env.</th>
+            <th class="col-lg-1 text-center">Cant. Fac.</th>
+            <th class="col-lg-1 text-center">Costo Un.</th>
+            <th class="col-lg-1 text-center">Costo To.</th>
+            <th class="hidden">Procentaje</th>
+            <th class="hidden">ImpuestoIgv</th>
+            <th class="hidden">Impuestoarticulo</th>
+            <th class="hidden">Impuestoproveedor</th>
+            <th class="hidden">Idmoneda</th>
+            <th class="col-lg-0 text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody id="tblFacDEt">
+        @if (Model != null && Model.Any())
+        {
+            int Count = 0;
+            foreach (var item in Model)
+            {
+                Count++;
+                <tr>
+                    <td>@item.Ponumber</td>
+                    <td class="hidden">@item.Ord</td>
+                    <td class="hidden">@item.Itemnmbr</td>
+                    <td style="padding-left:1px; padding-right:1px;">@Html.TextBox("Itemdesc", item.Itemdesc, new { @class = "form-control input-sm text-uppercase" })</td>
+                    <td>@item.Uofm</td>
+                    <td class="hidden">@item.Locncode</td>
+                    <td class="text-right">@item.Cantidadpedida.ToString("0")</td>
+                    <td style="padding-left:1px; padding-right:1px;">@Html.TextBox("Cantenviada", item.Cantenviada.ToString("0"), new { @class = "form-control input-sm text-uppercase text-right", @type = "number" })</td>
+                    <td class="text-right">@item.Cantfacturada.ToString("0")</td>
+                    <td class="text-right">@item.Costounitario.ToString("0.00")</td>
+                    <td class="text-right">@item.Costototal.ToString("0.00")</td>
+                    <td class="hidden">@item.Procentaje.ToString("0.00")</td>
+                    <td class="hidden">@(((item.Procentaje * item.Costototal) / 100).ToString("0.00"))</td>
+                    <td class="hidden">@item.Impuestoarticulo</td>
+                    <td class="hidden">@item.Impuestoproveedor</td>
+                    <td class="hidden">@item.Idmoneda</td>
+                    <td align="center">
+                        <button class="btn btn-danger btn-xs" title="Eliminar Servicio" onclick="fnEliminarServicio('@item.Ord');"><span class="glyphicon glyphicon-trash"></span>&nbsp</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="17" style="color:red">No hay registros</td>
+            </tr>
+        }
+    </tbody>
+</table>

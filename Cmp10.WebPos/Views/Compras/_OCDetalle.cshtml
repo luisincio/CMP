@@ -1,0 +1,43 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+<script>
+    function fnEliminar(t) { t.parent().parent().remove(), 1 == $("#FullTbl>tbody>tr").length && ($("#tblFacDEt").empty(), $("#tblFacDEt").append("<tr><td id='TempRow' colspan='7' style='color:red'>No hay registros</td></tr>")), fnCalcular() }
+    function fnCalcular()
+    {
+        var Subtotal = 0, Impuesto = 0, Total = 0;
+        $("#SubTotal").val(Subtotal.toFixed(2).toString());
+        $("#Impuesto").val(Impuesto.toFixed(2).toString());
+        $("#Total").val(Total.toFixed(2).toString());
+        $("#FullTbl tbody tr").each(function (index)
+        {
+            if ($(this).find("td").eq(5).html() != null)
+            {
+                Subtotal = Subtotal + parseFloat($(this).find("td").eq(5).html());
+                Impuesto = Impuesto + parseFloat($(this).find("td").eq(6).html());
+                Total = Impuesto + Subtotal;
+                $("#SubTotal").val(Subtotal.toFixed(2).toString());
+                $("#Impuesto").val(Impuesto.toFixed(2).toString());
+                $("#Total").val(Total.toFixed(2).toString());
+            }
+        })
+    }
+</script>
+<table id="FullTbl" class="table table-bordered table-responsive table-hover" style="border-radius: 3px; -moz-box-shadow: 0 1px 2px #D6C9DB; -webkit-box-shadow: 0 1px 2px #D6C9DB; box-shadow: 0 1px 2px #D6C9DB; ">
+    <thead class="tablahead" style="background-color: #D6C9DB; ">
+        <tr>
+            <th class="col-lg-1 text-center">Código</th>
+            <th class="col-lg-5 text-center">Descripción</th>
+            <th class="col-lg-1 text-center">U.M.</th>
+            <th class="col-lg-1 text-center">Cant. Ped.</th>
+            <th class="col-lg-2 text-center">Costo Uni.</th>
+            <th class="col-lg-2 text-center">Costo Tot.</th>
+            <th class="hidden">Impuesto</th>
+            <th class="text-center">Acción</th>
+        </tr>
+    </thead>
+    <tbody id="tblFacDEt">
+        <tr>
+            <td id="TempRow" colspan="8" style="color:red">No hay registros</td>
+        </tr>
+    </tbody>
+</table>

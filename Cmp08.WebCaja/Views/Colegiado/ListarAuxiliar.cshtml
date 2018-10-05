@@ -1,0 +1,61 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model IEnumerable<ColegiadoMin>
+<script>
+    function fnModificar(a) { document.location = FullPathSrv + "Colegiado/Registrar?vId=" + a }
+    $(document).ready(function () {
+        $("#btnAgregar").on("click", function () { fnMatricula(0) })
+        $("#btnLimpiar").on("click", function () { $("#vNombre").val(""), $("#vEstado").val("@Convert.ToInt32(EnumEstado.PRE_EVALUACION)") })
+
+    });
+</script>
+<div class="panel-group" id="accordion">
+    @using (Ajax.BeginForm("ListarAuxiliar", "Colegiado", new AjaxOptions { UpdateTargetId = "divDatos", HttpMethod = "GET", InsertionMode = InsertionMode.Replace }, new { @id = "frmBandeja" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Criterios de Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label for="vNombre" class="control-label col-md-3 input-sm">CMP / DNI / Nombres:</label>
+                                <div class="col-md-9">
+                                    @Html.TextBox("vNombre", null, new { @class = "form-control input-sm toupper next", @placeholder = "Ingrese nombre, apellido o número documento", @maxlength = "100" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-right">
+                            <button type="submit" name="vBuscar" value="1" class="btn btn-primary btn-sm">Buscar</button>
+                            <button type="button" class="btn btn-default btn-sm" id="btnLimpiar">Limpiar</button>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                        Resultados de la Búsqueda
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div id="divDatos" class="panel-body">
+                    @Html.Partial("_DetalleAx", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,95 @@
+﻿@using Cmp02.Entities;
+@using Cmp01.Utilities;
+@model TransaccionesCobros
+<script>
+    $(document).ready(function() 
+    {
+        $("#btnGrabar").on("click", function ()
+        {
+            var Obj = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+            Obj.TipodeDocumento = $("#TipodeDocumento").val();
+            Obj.NumerodeDocumento = $("#NumerodeDocumento").val();
+            Obj.Descripcion = $("#Descripcion").val();
+            Obj.Lote = $("#Lote").val();
+            Obj.FechaDocumento = $("#FechaDocumento").val();
+            Obj.FechaContabilizacion = $("#FechaDocumento").val();
+            Obj.IdCliente = $("#IdCliente").val();
+            Obj.IdDireccion = $("#IdDireccion").val();
+            Obj.IdTerritorio = $("#IdTerritorio").val();
+            Obj.Moneda = $("#Moneda").val();
+            Obj.TipodeCambio = $("#TipodeCambio").val();
+            Obj.Condicion = $("#Condicion").val();
+            Obj.MetododeEnvio = $("#MetododeEnvio").val();
+            Obj.IdPlanImpuestos = $("#IdPlanImpuestos").val();
+            Obj.IdPlanImpuestosVentas = $("#IdPlanImpuestosVentas").val();
+            Obj.IdPlanImpuestosFlete = $("#IdPlanImpuestosFlete").val();
+            Obj.IdPlanImpuestosMiscelaneo = $("#IdPlanImpuestosMiscelaneo").val();
+            Obj.NumOrdenCompra = $("#NumOrdenCompra").val();
+            Obj.Costo = $("#Costo").val();
+            Obj.Ventas = $("#Ventas").val();
+            Obj.DtoComercial = $("#DtoComercial").val();
+            Obj.Flete = $("#Flete").val();
+            Obj.Miscelaneo = $("#Miscelaneo").val();
+            Obj.CuentaContable = $("#CuentaContable").val();
+            Obj.TipoDocSunat = $("#TipoDocSunat").val();
+
+            //Obj.Afectaregcompra = $("#AfectoRC").prop("checked");
+            //Obj.Afectaretencion = $("#AfectoRetencion").prop("checked");
+            
+            $.ajax({
+                url: FullPathSrv + "Pagos/GrabarNotaCredito",
+                async: false,
+                type: "POST",
+                data: JSON.stringify(Obj),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+                },
+                success: function (a, textStatus, jqXHR)
+                {
+                    "1" == a ? (FullMsg.Alert("Se envío correctamente"), setTimeout("Limpiar()",5000) ) : FullMsg.Alert("Ocurrio un error al procesar " + a) 
+                }
+            });
+        });
+    
+    });
+
+    function Limpiar() { document.location = FullPathSrv + "Pagos/NotaCredito"};
+</script>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    Notas de Crédito
+                </a>
+            </h3>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body" id="divFull">
+                @using (Ajax.BeginForm("GrabarNotaCredito", "Pagos", new AjaxOptions { UpdateTargetId = "divCabecera", HttpMethod = "POST", InsertionMode = InsertionMode.Replace }, new { @id = "frmCabecera" }))
+                {
+                    <div id="divCabecera">
+                        @Html.Partial("_Cabecera", Model)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" id="btnGrabar" class="btn btn-primary">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-default">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

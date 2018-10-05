@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3840507F-9AD1-4744-9A99-41BCCDB088BC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cmp02.Entities</RootNamespace>
+    <AssemblyName>Cmp02.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\Cmp01.Utilities\01Binaries\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Utildatatool">
+      <HintPath>..\Cmp01.Utilities\01Binaries\Utildatatool.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="01Base\Base.cs" />
+    <Compile Include="02Models\Tb_Cobranza.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Carnet.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Consejo.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Especialidad.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Estado.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Estudio.cs" />
+    <Compile Include="02Models\Tb_Colegiado_Laboral.cs" />
+    <Compile Include="02Models\Tb_Comprobantecabecera.cs" />
+    <Compile Include="02Models\Tb_Comprobantedetalle.cs" />
+    <Compile Include="02Models\Tb_Correlativos.cs" />
+    <Compile Include="02Models\Tb_Domicilio.cs" />
+    <Compile Include="02Models\Tb_Maestras.cs" />
+    <Compile Include="02Models\Tb_Medio_Contacto.cs" />
+    <Compile Include="02Models\Tb_Pais.cs" />
+    <Compile Include="02Models\Tb_Parametro.cs" />
+    <Compile Include="02Models\Tb_Perfil.cs" />
+    <Compile Include="02Models\Tb_Perfilpermiso.cs" />
+    <Compile Include="02Models\Tb_Perfilusuario.cs" />
+    <Compile Include="02Models\Tb_Permiso.cs" />
+    <Compile Include="02Models\Tb_Persona.cs" />
+    <Compile Include="02Models\Tb_Persona_Directivo.cs" />
+    <Compile Include="02Models\Tb_Persona_Imagen.cs" />
+    <Compile Include="02Models\Tb_Persona_Juridica.cs" />
+    <Compile Include="02Models\Tb_Persona_Natural.cs" />
+    <Compile Include="02Models\Tb_Servicios.cs" />
+    <Compile Include="02Models\Tb_Temporal_Planilla.cs" />
+    <Compile Include="02Models\Tb_Ubigeo.cs" />
+    <Compile Include="02Models\Tb_Usuario.cs" />
+    <Compile Include="03Partials\Tb_Cobranza_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Carnet_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Consejo_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Especialidad_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Estado_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Estudio_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Colegiado_Laboral_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Comprobantecabecera_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Comprobantedetalle_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Correlativos_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Domicilio_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Maestras_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Medio_Contacto_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Pais_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Parametro_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Perfilpermiso_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Perfilusuario_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Perfil_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Permiso_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Persona_Directivo_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Persona_Imagen_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Persona_Juridica_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Persona_Natural_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Persona_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Servicios_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Temporal_Planilla_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Ubigeo_Parcial.cs" />
+    <Compile Include="03Partials\Tb_Usuario_Parcial.cs" />
+    <Compile Include="04Customized\Articulo.cs" />
+    <Compile Include="04Customized\Cliente.cs" />
+    <Compile Include="04Customized\ClienteClover.cs" />
+    <Compile Include="04Customized\ClienteNJ.cs" />
+    <Compile Include="04Customized\ColegiadoMicro.cs" />
+    <Compile Include="04Customized\ColegiadoMicro4.cs" />
+    <Compile Include="04Customized\Colegiado.cs" />
+    <Compile Include="04Customized\ColegiadoMin.cs" />
+    <Compile Include="04Customized\CuentaGasto.cs" />
+    <Compile Include="04Customized\EmpresaMin.cs" />
+    <Compile Include="04Customized\EntradaTransaccion.cs" />
+    <Compile Include="04Customized\Factura.cs" />
+    <Compile Include="04Customized\FullConsulta.cs" />
+    <Compile Include="04Customized\OtraCobranza.cs" />
+    <Compile Include="04Customized\OrdenCompra.cs" />
+    <Compile Include="04Customized\Pagos_Manuales.cs" />
+    <Compile Include="04Customized\Proveedores.cs" />
+    <Compile Include="04Customized\Recepcion.cs" />
+    <Compile Include="04Customized\DetraccionComprobantes.cs" />
+    <Compile Include="04Customized\NotaCreditoDebitoCaja.cs" />
+    <Compile Include="04Customized\TransaccionesCobros.cs" />
+    <Compile Include="04Customized\Transacciones.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

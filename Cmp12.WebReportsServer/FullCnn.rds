@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="FullCnn">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=200.48.13.39;Initial Catalog=BD_CMP</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>9f2f89a0-4500-479a-a27d-4b0a0c66be89</DataSourceID>
+</RptDataSource>
